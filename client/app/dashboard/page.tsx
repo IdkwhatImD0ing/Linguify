@@ -30,7 +30,7 @@ export default function Dashboard() {
                 <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
             </header>
 
-            <main className="flex-grow px-4 py-6 space-y-4">
+            <main className="flex-grow px-4 space-y-4">
                 <h1 className="text-2xl font-bold text-gray-800">Ongoing Lesson</h1>
                 <div className="grid grid-cols-2 gap-4">
                 {[...Array(6)].map((_, index) => (
@@ -44,7 +44,7 @@ export default function Dashboard() {
 
             <nav className="bg-[#385664] text-[#F5F5F5] shadow-lg my-3 mx-10 py-4 flex justify-around items-center rounded-full">
                 <Home
-                className={`w-9 h-9 cursor-pointer ${pathname === '/dashboard' ? 'text-green-500' : 'text-white'}`}
+                className={`w-9 h-9 cursor-pointer ${pathname === '/dashboard' ? 'text-[#AADF69]' : 'text-white'}`}
                 onClick={() => handleNavigation('/dashboard')} 
                 />
                 <Camera
