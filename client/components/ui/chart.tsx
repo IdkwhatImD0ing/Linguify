@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
 
 export type ChartConfig = {
@@ -9,12 +9,11 @@ export type ChartConfig = {
     };
 
     interface ChartContainerProps {
-    children: React.ReactNode;
-    config: ChartConfig;
+    children: ReactNode;
     className?: string;
     }
 
-    export const ChartContainer: React.FC<ChartContainerProps> = ({ children, className }) => (
+    export const ChartContainer: React.FC<ChartContainerProps> = ({ children, className, config }) => (
     <div className={className}>
         <ResponsiveContainer width="100%" height="100%">
         {children}

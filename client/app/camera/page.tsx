@@ -9,18 +9,23 @@ import { useRouter, usePathname } from "next/navigation";
 import { database } from "@/lib/firebase/config";
 import { set, ref, push, get } from "firebase/database";
 import { useAuth } from "@clerk/nextjs";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export default function UploadPage() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [file, setFile] = useState<File | null>(null);
-  const [language, setLanguage] = useState("en");
-
-  const { userId } = useAuth();
+    const router = useRouter();
+    const pathname = usePathname();
+    const [file, setFile] = useState<File | null>(null);
+    const [language, setLanguage] = useState('');
+    const { userId } = useAuth();
 
   const convertBlobToBase64 = async (blob: any) => {
     return await blobToBase64(blob);
