@@ -6,26 +6,19 @@ import { useState } from "react";
 import Image from "next/image";
 import { ArrowLeft, Home, Camera, User, Globe } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-import { database } from "@/lib/firebase/config";
-import { set, ref, push, get } from "firebase/database";
 import { useAuth } from "@clerk/nextjs";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-    DropdownMenuContent,
-    DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export default function UploadPage() {
-    const router = useRouter();
-    const pathname = usePathname();
-    const [file, setFile] = useState<File | null>(null);
-    const [language, setLanguage] = useState('');
-    const { userId } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [file, setFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+  const [language, setLanguage] = useState('en-US');
+  const { userId } = useAuth();
 
   const convertBlobToBase64 = async (blob: any) => {
     return await blobToBase64(blob);
@@ -43,6 +36,11 @@ export default function UploadPage() {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
+
+      // Create a preview URL for the uploaded image
+      const imageUrl = URL.createObjectURL(selectedFile);
+      setImagePreviewUrl(imageUrl);
+
       const b64 = await convertBlobToBase64(selectedFile);
       await fetch("/api/upload", {
         method: "POST",
@@ -65,15 +63,12 @@ export default function UploadPage() {
 
   const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value);
-    // Here you would typically update the app's language setting
-    // For example: updateAppLanguage(e.target.value)
+    // You can update the app's language setting here if needed
   };
 
   const handleStartCall = async () => {
-    // Here you would implement the logic to start the call
-    // For example: startBackendCall()
     console.log("Starting call to backend...");
-    await router.push("/conversation");
+    await router.push(`/conversation?locale=${language}`);
   };
 
   return (
@@ -99,18 +94,21 @@ export default function UploadPage() {
             onChange={handleLanguageChange}
             className="bg-transparent text-[#385664] border border-[#385664] rounded-md px-2 py-1 text-sm"
           >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="zh">中文</option>
-            <option value="ko">한국어</option>
-            <option value="ja">日本語</option>
-            <option value="ar">العربية</option>
-            <option value="hi">हिन्दी</option>
-            <option value="pt">Português</option>
-            <option value="ru">Русский</option>
-            <option value="it">Italiano</option>
+            <option value="en-US">English</option>
+            <option value="es-ES">Español</option>
+            <option value="fr-FR">Français</option>
+            <option value="de-DE">Deutsch</option>
+            <option value="zh-CN">中文</option>
+            <option value="ko-KR">한국어</option>
+            <option value="ja-JP">日本語</option>
+            <option value="hi-IN">हिन्दी</option>
+            <option value="pt-PT">Português</option>
+            <option value="ru-RU">Русский</option>
+            <option value="it-IT">Italiano</option>
+            <option value="nl-NL">Nederlands</option>
+            <option value="pl-PL">Polski</option>
+            <option value="tr-TR">Türkçe</option>
+            <option value="vi-VN">Tiếng Việt</option>
           </select>
         </div>
       </header>
@@ -125,23 +123,42 @@ export default function UploadPage() {
             "hover:before:opacity-100"
           )}
         >
-          <div className="relative z-10 bg-opacity-50 bg-white rounded-xl p-6 flex flex-col items-center">
-            <div className="relative w-40 h-40 mb-4">
-              <Image
-                src="/assets/icon-dark.png"
-                alt="Linguify Logo"
-                layout="fill"
-                objectFit="contain"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
+          {imagePreviewUrl ? (
+            // Display the uploaded image
+            <div className="relative z-10 bg-opacity-50 bg-white rounded-xl p-6 flex flex-col items-center">
+              <div className="relative w-40 h-40 mb-4">
+                <img
+                  src={imagePreviewUrl}
+                  alt="Uploaded"
+                  className="object-contain w-full h-full"
+                />
+              </div>
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-[#385664]">
+                  Click to change image
+                </h2>
+              </div>
             </div>
-            <div className="text-center">
-              <h2 className="text-3xl font-bold text-[#385664]">
-                Take a picture
-              </h2>
-              <p className="text-[#385664] font-bold">or add a file</p>
+          ) : (
+            // Display the default prompt
+            <div className="relative z-10 bg-opacity-50 bg-white rounded-xl p-6 flex flex-col items-center">
+              <div className="relative w-40 h-40 mb-4">
+                <Image
+                  src="/assets/icon-dark.png"
+                  alt="Linguify Logo"
+                  layout="fill"
+                  objectFit="contain"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
+              <div className="text-center">
+                <h2 className="text-3xl font-bold text-[#385664]">
+                  Take a picture
+                </h2>
+                <p className="text-[#385664] font-bold">or add a file</p>
+              </div>
             </div>
-          </div>
+          )}
         </label>
 
         <input
@@ -174,9 +191,8 @@ export default function UploadPage() {
           onClick={() => handleNavigation("/dashboard")}
         />
         <Camera
-          className={`w-9 h-9 cursor-pointer ${
-            pathname === "/camera" ? "text-[#AADF69]" : "text-white"
-          }`}
+          className={`w-9 h-9 cursor-pointer ${pathname === "/camera" ? "text-[#AADF69]" : "text-white"
+            }`}
           onClick={() => handleNavigation("/camera")}
         />
         <User
