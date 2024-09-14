@@ -28,11 +28,20 @@ const Conversation = () => {
     // Reference to the end of the transcript for auto-scrolling
     const transcriptEndRef = useRef<HTMLDivElement>(null);
 
+    // State to hold the image URL
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
     // Initialize the SDK, set up event listeners, and start the call
     useEffect(() => {
         if (!agentId || !language || !userId) {
             // Wait until all data is available
             return;
+        }
+
+        // Retrieve the image from local storage
+        const storedImage = localStorage.getItem("latestUploadedImage");
+        if (storedImage) {
+            setImagePreviewUrl(storedImage);
         }
 
         retellWebClient.on("call_started", () => {
@@ -196,6 +205,11 @@ const Conversation = () => {
 
     return (
         <div className="conversation-container" style={styles.container}>
+            {imagePreviewUrl && (
+                <div className="image-preview" style={styles.imagePreviewContainer}>
+                    <img src={imagePreviewUrl} alt="Uploaded" style={styles.imagePreview} />
+                </div>
+            )}
             <main className="conversation-main" style={styles.main}>
                 <h2 style={styles.title}>Transcript</h2>
                 <div className="transcript" style={styles.transcript}>
@@ -240,6 +254,19 @@ const styles: { [key: string]: React.CSSProperties } = {
         height: "100vh",
         fontSize: "24px",
         backgroundColor: "#f0f0f0",
+    },
+    imagePreviewContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "10px",
+        backgroundColor: "#ffffff",
+        borderBottom: "1px solid #ccc",
+    },
+    imagePreview: {
+        maxWidth: "100%",
+        maxHeight: "200px",
+        objectFit: "contain",
     },
     main: {
         flex: 1,
