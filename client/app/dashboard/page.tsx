@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Home, Camera, User } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation'; 
+import {UserButton, SignedIn} from '@clerk/nextjs';
 
 export default function Dashboard() {
     const router = useRouter(); 
@@ -16,18 +17,22 @@ export default function Dashboard() {
         <div className="min-h-screen w-full bg-[#E9E6E6] flex flex-col">
             <header className="flex justify-between items-center p-4">
                 <div className="flex items-center space-x-2">
-                <div className="relative w-10 h-10">
-                    <Image
-                    src="/assets/icon-dark.png"
-                    alt="Linguify Logo"
-                    layout="fill"
-                    objectFit="contain"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
+                    <div className="relative w-10 h-10">
+                        <Image
+                        src="/assets/icon-dark.png"
+                        alt="Linguify Logo"
+                        layout="fill"
+                        objectFit="contain"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                    </div>
+                    <span className="font-bold text-lg text-gray-800">210</span>
                 </div>
-                <span className="font-bold text-lg text-gray-800">210</span>
+                <div className="w-8 h-8  rounded-full"> 
+                    <SignedIn>
+                        <UserButton />
+                    </SignedIn>
                 </div>
-                <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
             </header>
 
             <main className="flex-grow px-4 py-6 space-y-4">
