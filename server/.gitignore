@@ -4,3 +4,4 @@ __pycache__
 .env
 
 test.py
+firebase_service_account.json
