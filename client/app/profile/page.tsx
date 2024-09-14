@@ -86,7 +86,7 @@ export default function ProfilePage() {
                                 <CardTitle>Language Progress</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="mb-4">
+                                <div className="mb-2">
                                     <div className="flex justify-between mb-1 text-[#385664]">
                                         <span className="text-sm font-medium">Language #1</span>
                                         <span className="text-sm font-medium ">75%</span>
@@ -105,12 +105,12 @@ export default function ProfilePage() {
 
                         <Card className="w-full max-w-md text-[#385664] border-none">
                             <CardHeader>
-                                <CardTitle>Overall Statistics</CardTitle>
+                                <CardTitle className="mt-[-20px]">Overall Statistics</CardTitle>
                                 <CardDescription>Your language skills breakdown</CardDescription>
                             </CardHeader>
-                            <CardContent className="pb-0">
+                            <CardContent className="pb-0 mt-[-20px]">
                                 <ChartContainer
-                                    config={chartConfig}
+                                    // config={chartConfig}
                                     className="mx-auto aspect-square max-h-[225px] w-full"
                                 >
                                     <RadarChart data={chartData}>
@@ -129,7 +129,7 @@ export default function ProfilePage() {
                                     </RadarChart>
                                 </ChartContainer>
                             </CardContent>
-                            <CardFooter className="flex-col gap-2 text-sm">
+                            <CardFooter className="flex-col gap-2 text-sm mb-[-10px]">
                                 <div className="flex items-center gap-2 font-medium leading-none">
                                     Improving by 5.2% this month <TrendingUp className="h-4 w-4" />
                                 </div>

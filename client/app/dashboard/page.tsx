@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Home, Camera, User } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation'; 
 import {UserButton, SignedIn} from '@clerk/nextjs';

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { ArrowRight } from 'lucide-react';
 import { SignInButton, useAuth } from "@clerk/nextjs";
 import { useRouter } from 'next/navigation'; 
