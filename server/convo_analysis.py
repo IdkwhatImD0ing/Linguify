@@ -1,6 +1,7 @@
 import openai
 import requests
 import os
+from custom_types import Feedback
 
 from dotenv import load_dotenv
 class ConvoAnalysis:
@@ -31,7 +32,7 @@ class ConvoAnalysis:
                 "content": (
                     "You are an assistant that analyzes the proficiency of a user's conversation. "
                     "Provide detailed feedback on the following aspects: grammar, fluency, vocabulary, "
-                    "coherence, engagement level, and pronunciation. For each category, give a score out of 10 "
+                    "coherence, and engagement level. For each category, give a score out of 10 "
                     "and offer suggestions for improvement."
                 )
             },
@@ -42,11 +43,12 @@ class ConvoAnalysis:
         ]
 
         try:
-            response = openai.chat.completions.create(
+            response = openai.beta.chat.completions.parse(
                 model="gpt-4o-mini",
                 messages=messages,
                 max_tokens=800,
-                temperature=0.7  # Adjust as needed for creativity
+                temperature=0.7,  # Adjust as needed for creativity
+                response_format=Feedback
             )
             # Extract and return the content from the response
             return response.choices[0].message.content
