@@ -25,3 +25,12 @@ body {
     text-wrap: balance;
   }
 }
+
+@keyframes breathe{
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-breathe{
+  animation: float 5s ease-in-out infinite;
+}

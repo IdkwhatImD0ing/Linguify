@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ArrowLeft, Home, Camera, User, Globe } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { database } from '@/lib/firebase/config'
-import { set, ref, push, query, orderByChild, equalTo, get } from "firebase/database";
+import { set, ref, push, get } from "firebase/database";
 import { useAuth } from "@clerk/nextjs";
 import {
     DropdownMenu,
@@ -65,10 +65,11 @@ export default function UploadPage() {
         // For example: updateAppLanguage(newLanguage)
     };
 
-    const handleStartCall = () => {
+    const handleStartCall = async () => {
         // Here you would implement the logic to start the call
         // For example: startBackendCall()
         console.log("Starting call to backend...");
+        await router.push("/conversation");
     };
 
     return (

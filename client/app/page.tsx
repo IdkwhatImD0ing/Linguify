@@ -21,7 +21,7 @@ export default function LinguifyLanding() {
       style={{ backgroundImage: `url('assets/bgs.png')` }}>
 
       <div className="flex flex-col items-center justify-center">
-        <div className="w-80 h-80 rounded-full bg-white bg-opacity-25 shadow-lg flex items-center justify-center">
+        <div className="w-80 h-80 rounded-full bg-white bg-opacity-25 shadow-lg flex items-center justify-center animate-breathe">
           <div className="relative w-60 h-60">
             <Image
               src="/assets/landingLogo.png" 
