@@ -8,7 +8,7 @@ from custom_types import (
 )
 
 # Set the target language (this can be dynamic based on user input)
-target_language = "Chinese"  # For example, "French", "German", etc.
+target_language = "English"  # For example, "French", "German", etc.
 
 begin_sentence = f"Hi there! Let's chat about the picture you uploaded in {target_language}. Are you ready?"
 
@@ -28,7 +28,7 @@ class LlmClient:
             content=begin_sentence,
             content_complete=True,
             end_call=False,
-        )
+        ) 
         return response
 
     def convert_transcript_to_openai_messages(self, transcript: List[Utterance]):
