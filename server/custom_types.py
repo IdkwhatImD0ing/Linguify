@@ -59,3 +59,15 @@ class ResponseResponse(BaseModel):
 
 
 CustomLlmResponse = Union[ConfigResponse | PingPongResponse | ResponseResponse]
+
+class Feedback(BaseModel):
+    grammarRating: int
+    grammarSummary: str
+    fluencyRating: int
+    fluencySummary: str
+    vocabularyRating: int
+    vocabularySummary: str
+    coherenceRating: int
+    coherenceSummary: str
+    engagementRating: int
+    engagementSummary: str
