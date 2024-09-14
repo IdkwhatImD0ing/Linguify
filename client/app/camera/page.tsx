@@ -11,14 +11,14 @@ export default function UploadPage() {
     const [file, setFile] = useState<File | null>(null); 
 
     const convertBlobToBase64 = async (blob: any) => {
-      return await blobToBase64(blob);
+        return await blobToBase64(blob);
     }
     
     const blobToBase64 = (blob: any) => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
     });
     
 
@@ -28,7 +28,7 @@ export default function UploadPage() {
         if (selectedFile) {
             const reader = new FileReader();
             reader.onload = (e) => {
-              setFile(selectedFile);
+                setFile(selectedFile);
             }
 
             const b64 = await convertBlobToBase64(selectedFile);
@@ -43,8 +43,8 @@ export default function UploadPage() {
     };
 
     return (
-        <div className="h-screen w-full flex flex-col bg-cover bg-center"
-             style={{ backgroundImage: `url('/assets/bgc.png')` }}>
+        <div className="h-screen w-full flex flex-col bg-cover bg-center pt-8"
+            style={{ backgroundImage: `url('/assets/bgc.png')` }}>
             <header className="flex items-center p-4 relative">
                 <ArrowLeft className="absolute left-4 w-6 h-6 text-[#385664] cursor-pointer" onClick={() => handleNavigation('/dashboard')}/>
                 <h1 className="flex-grow text-center ml-4 text-lg font-semibold text-[#385664]">Linguify your conversation</h1>
@@ -71,7 +71,7 @@ export default function UploadPage() {
                     type="file"
                     id="file-upload"
                     className="hidden"
-                    onChange={handleFileChange} // File change handler
+                    onChange={handleFileChange} 
                 />
                 <label
                     htmlFor="file-upload"

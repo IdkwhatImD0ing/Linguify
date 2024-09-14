@@ -14,7 +14,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen w-full bg-[#E9E6E6] flex flex-col">
+        <div className="min-h-screen w-full bg-[#E9E6E6] flex flex-col pt-8">
             <header className="flex justify-between items-center p-4">
                 <div className="flex items-center space-x-2">
                     <div className="relative w-10 h-10">
