@@ -13,7 +13,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen w-full bg-gray-100 flex flex-col">
+        <div className="min-h-screen w-full bg-[#E9E6E6] flex flex-col">
             <header className="flex justify-between items-center p-4">
                 <div className="flex items-center space-x-2">
                 <div className="relative w-10 h-10">
@@ -42,17 +42,17 @@ export default function Dashboard() {
                 </div>
             </main>
 
-            <nav className="bg-gray-700 text-white m-5 p-4 flex justify-around items-center rounded-lg">
+            <nav className="bg-[#385664] text-[#F5F5F5] shadow-lg my-3 mx-10 py-4 flex justify-around items-center rounded-full">
                 <Home
-                className={`w-6 h-6 cursor-pointer ${pathname === '/dashboard' ? 'text-green-500' : 'text-white'}`}
+                className={`w-9 h-9 cursor-pointer ${pathname === '/dashboard' ? 'text-green-500' : 'text-white'}`}
                 onClick={() => handleNavigation('/dashboard')} 
                 />
                 <Camera
-                className="w-6 h-6 cursor-pointer"
+                className="w-9 h-9 cursor-pointer"
                 onClick={() => handleNavigation('/camera')} 
                 />
                 <User
-                className="w-6 h-6 cursor-pointer"
+                className="w-9 h-9 cursor-pointer"
                 onClick={() => handleNavigation('/profile')} 
                 />
             </nav>

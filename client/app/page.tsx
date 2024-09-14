@@ -12,9 +12,10 @@ export default function LinguifyLanding() {
   };
 
   return (
-    <div className="h-screen w-full bg-blue-100 bg-gradient-to-br from-blue-100 via-green-100 to-blue-100 flex flex-col items-center justify-center p-6 relative">
+    <div className="h-screen w-full flex items-center justify-center p-6 relative bg-cover bg-center"
+         style={{ backgroundImage: `url('assets/bgs.png')`}}>
       <div className="flex flex-col items-center justify-center">
-        <div className="w-64 h-64 rounded-full bg-white bg-opacity-50 flex items-center justify-center">
+        <div className="w-64 h-64 rounded-full bg-white bg-opacity-25 shadow-lg flex items-center justify-center">
           <div className="relative w-48 h-48">
             <Image
               src="/assets/landingLogo.png" 

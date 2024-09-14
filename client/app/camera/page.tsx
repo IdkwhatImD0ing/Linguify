@@ -23,14 +23,15 @@ export default function UploadPage() {
     };
 
     return (
-        <div className="h-screen w-full bg-gradient-to-b from-green-50 to-blue-50 flex flex-col">
-            <header className="flex items-center p-4">
-                <ArrowLeft className="w-6 h-6 text-gray-600" onClick={() => handleNavigation('/dashboard')}/>
-                <h1 className="ml-4 text-lg font-semibold text-gray-700">Linguify your conversation</h1>
+        <div className="h-screen w-full flex flex-col bg-cover bg-center"
+             style={{ backgroundImage: `url('/assets/bgc.png')` }}>
+            <header className="flex items-center p-4 relative">
+                <ArrowLeft className="absolute left-4 w-6 h-6 text-[#385664] cursor-pointer" onClick={() => handleNavigation('/dashboard')}/>
+                <h1 className="flex-grow text-center ml-4 text-lg font-semibold text-[#385664]">Linguify your conversation</h1>
             </header>
 
             <main className="flex-grow flex flex-col items-center justify-center px-4 space-y-6">
-                <div className="relative w-64 h-64">
+                <div className="relative w-40 h-40">
                     <Image
                         src="/assets/icon-dark.png"
                         alt="Linguify Logo"
@@ -41,8 +42,8 @@ export default function UploadPage() {
                 </div>
 
                 <div className="text-center">
-                    <h2 className="text-2xl font-bold text-gray-800">Take a picture</h2>
-                    <p className="text-gray-600">or add a file</p>
+                    <h2 className="text-3xl font-bold text-[#385664]">Take a picture</h2>
+                    <p className="text-[#385664] font-bold">or add a file</p>
                 </div>
 
                 {/* File Input */}
@@ -54,25 +55,25 @@ export default function UploadPage() {
                 />
                 <label
                     htmlFor="file-upload"
-                    className="bg-green-400 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-green-500 transition-colors cursor-pointer"
+                    className="bg-[#AADF69] text-white px-14 py-3 rounded-full text-lg font-semibold hover:bg-green-500 transition-colors cursor-pointer"
                 >
                     Upload file »
                 </label>
 
-                {file && <p className="text-green-600 mt-2">File: {file.name} uploaded!</p>}
+                {file && <p className="text-[#AADF69] font-bold mt-2">File: {file.name} uploaded!</p>}
             </main>
 
-            <nav className="bg-gray-700 text-white m-5 p-4 flex justify-around items-center rounded-lg">
+            <nav className="bg-[#385664] text-[#F5F5F5] shadow-lg my-3 mx-10 py-4 flex justify-around items-center rounded-full">
                 <Home
-                    className="w-6 h-6 cursor-pointer"
+                    className="w-9 h-9 cursor-pointer"
                     onClick={() => handleNavigation('/dashboard')}
                 />
                 <Camera
-                    className={`w-6 h-6 cursor-pointer ${pathname === '/camera' ? 'text-green-500' : 'text-white'}`}
+                    className={`w-9 h-9 cursor-pointer ${pathname === '/camera' ? 'text-[#AADF69]' : 'text-white'}`}
                     onClick={() => handleNavigation('/camera')}
                 />
                 <User
-                    className="w-6 h-6 cursor-pointer"
+                    className="w-9 h-9 cursor-pointer"
                     onClick={() => handleNavigation('/profile')}
                 />
             </nav>
