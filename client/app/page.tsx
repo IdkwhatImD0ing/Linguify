@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { ArrowRight } from 'lucide-react'; 
-import { SignInButton, UserButton, SignedIn, SignedOut } from "@clerk/nextjs"; // Import SignInButton from Clerk
+import { SignInButton } from "@clerk/nextjs"; // Import SignInButton from Clerk
 import { useRouter } from 'next/navigation'; // Use next/navigation
 
 export default function LinguifyLanding() {
@@ -28,27 +28,17 @@ export default function LinguifyLanding() {
           </div>
         </div>
       </div>
-
-      {/* UserButton displayed when signed in, positioned in the top-right */}
-      <SignedIn>
-        <div className="absolute top-4 right-4">
-          <UserButton />
-        </div>
-      </SignedIn>
-
-      <SignedOut>
-        <div className="flex"> 
-          <SignInButton mode="modal">    
-            <button
-              className="bg-gray-700 text-white px-6 py-3 rounded-full flex items-center space-x-2 absolute bottom-10 right-10 hover:bg-gray-600 transition-colors"
-              onClick={handleJoinClick} // Add onClick handler for navigation
-            >
-              <span>Join in</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </SignInButton> 
-        </div>
-      </SignedOut>
+      <div className="flex"> 
+        <SignInButton mode="modal">    
+          <button
+            className="bg-gray-700 text-white px-6 py-3 rounded-full flex items-center space-x-2 absolute bottom-10 right-10 hover:bg-gray-600 transition-colors"
+            onClick={handleJoinClick} // Add onClick handler for navigation
+          >
+            <span>Join in</span>
+            <ArrowRight className="w-5 h-5" />
+          </button>
+        </SignInButton> 
+      </div>
     </div>
   );
 }
