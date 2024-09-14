@@ -56,16 +56,16 @@ export async function POST(req: Request) {
   const eventType = evt.type
   if (eventType === "user.created") {
     try {
-      const usersRef = ref(database, "users");
+      const usersRef = ref(database, `users`);
       const newUserRef = push(usersRef); // Generates a unique ID for the new user
 
       const userData: User = {
+        id: evt.data.id,
         email: evt.data.email_addresses[0].email_address,
         firstname: evt.data.first_name as string,
         lastname: evt.data.last_name as string,
         currentStreak: 0,
         highestStreak: 0,
-        uploadedImages: [],
         interactions: []
       }
 

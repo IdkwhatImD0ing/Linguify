@@ -6,6 +6,9 @@ import { useState } from 'react';
 import Image from "next/image";
 import { ArrowLeft, Home, Camera, User, Globe } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
+import { database } from '@/lib/firebase/config'
+import { set, ref, push, query, orderByChild, equalTo, get } from "firebase/database";
+import { useAuth } from "@clerk/nextjs";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -16,6 +19,7 @@ export default function UploadPage() {
     const pathname = usePathname();
     const [file, setFile] = useState<File | null>(null);
     const [language, setLanguage] = useState('en');
+    const { userId } = useAuth();
 
     const convertBlobToBase64 = async (blob: any) => {
         return await blobToBase64(blob);
@@ -34,6 +38,13 @@ export default function UploadPage() {
             setFile(selectedFile);
             const b64 = await convertBlobToBase64(selectedFile);
             console.log(b64);
+            const usersRef = ref(database, "users");
+            const usersQuery = query(usersRef, orderByChild("id"), equalTo(userId as string));
+            const snapshot = await get(usersQuery);
+              
+            if(snapshot.exists()) console.log(snapshot.val())
+
+
             console.log("File uploaded:", selectedFile.name);
         }
     };
