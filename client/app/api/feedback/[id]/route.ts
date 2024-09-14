@@ -86,10 +86,11 @@ async function analyzeProficiency(conversationText: string): Promise<string> {
 
 
 // Handle POST request
-export async function POST(request: NextRequest) {
-
+export async function GET(request: NextRequest,  { params }: { params: { id: string } }) {
+  const { id } = params;
   try {
-    const data = await getConversation("call_044d239026aaa5304e2f24afda7");
+    // const data = await getConversation("call_044d239026aaa5304e2f24afda7")
+    const data = await getConversation(id)
     const result = await analyzeProficiency(JSON.stringify(data));
     return NextResponse.json(result, {
       status: 200,

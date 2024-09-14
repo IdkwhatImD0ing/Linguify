@@ -28,6 +28,8 @@ const Conversation = () => {
     // Reference to the end of the transcript for auto-scrolling
     const transcriptEndRef = useRef<HTMLDivElement>(null);
 
+    console.log(feedback)
+
     // Initialize the SDK, set up event listeners, and start the call
     useEffect(() => {
         if (!agentId || !language || !userId) {
@@ -86,8 +88,7 @@ const Conversation = () => {
             console.log("Call has ended. Logging call id: ")
             console.log(callId.current);
             const convoFeedback = await getFeedback(callId.current);
-            console.log(convoFeedback)
-            // setFeedback(convoFeedback)
+            setFeedback(convoFeedback);
         })
 
         retellWebClient.on("error", (error) => {
@@ -106,7 +107,8 @@ const Conversation = () => {
                 const registerCallResponse = await registerCall(agentId);
 
                 callId.current = registerCallResponse.call_id;
-                console.log(callId.current);
+                console.log("---- FOUND CALL ID ------")
+                
                 if (registerCallResponse.access_token) {
                     await retellWebClient.startCall({
                         accessToken: registerCallResponse.access_token,
@@ -168,13 +170,14 @@ const Conversation = () => {
 
     async function getFeedback(callId: string): Promise<any> {
         try {
-            const response = await fetch("http://localhost:8000/feedback/" + callId);
+            const response = await fetch("/api/feedback/" + callId);
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.status}`);
             }
 
             const data = await response.json();
+            console.log(data)
             return data;
         } catch (err) {
             console.error("Error getting call data:", err);
