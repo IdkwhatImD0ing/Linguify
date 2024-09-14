@@ -58,7 +58,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       setImagePreviewUrl(imageUrl);
 
         const b64 = await convertBlobToBase64(selectedFile);
-        localStorage.setItem("latestUploadedImage", b64);
+        // localStorage.setItem("latestUploadedImage", b64);
         await fetch("/api/image", {
             method: "POST",
             headers: {
@@ -76,11 +76,6 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
     const handleNavigation = (route: string) => {
         router.push(route);
-    };
-
-    const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setLanguage(e.target.value);
-        // You can update the app's language setting here if needed
     };
 
   const handleStartCall = async () => {
