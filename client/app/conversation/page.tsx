@@ -1,4 +1,5 @@
 "use client";
+import { Feedback } from "@/types/api";
 import React, { useEffect, useState, useRef } from "react";
 import { RetellWebClient } from "retell-client-js-sdk";
 
@@ -6,6 +7,7 @@ const agentId = "agent_3e6eb29bd647e7d27cde795417";
 
 interface RegisterCallResponse {
     access_token: string;
+    call_id: string;
 }
 
 const retellWebClient = new RetellWebClient();
@@ -14,7 +16,9 @@ const Conversation = () => {
     const [isCalling, setIsCalling] = useState(false);
     const [language, setLanguage] = useState("English");
     const [imageBase64, setImageBase64] = useState("");
-    const [fullTranscript, setFullTranscript] = useState<TranscriptMessage[]>([]);
+    const [fullTranscript, setFullTranscript] = useState<any>([]);
+    const callId = useRef("");
+    const [feedback, setFeedback] = useState<Feedback>();
 
     // Reference to the end of the transcript for auto-scrolling
     const transcriptEndRef = useRef<HTMLDivElement>(null);
@@ -44,7 +48,7 @@ const Conversation = () => {
         });
 
         retellWebClient.on("update", (update) => {
-            setFullTranscript((prevTranscript) => {
+            setFullTranscript((prevTranscript: any) => {
                 // Check if update.transcript has at least one message
                 if (update.transcript.length === 0) {
                     return prevTranscript;
@@ -77,10 +81,14 @@ const Conversation = () => {
         });
 
 
-
         retellWebClient.on("metadata", (metadata) => {
             // Handle metadata if needed
         });
+
+        retellWebClient.on("call_ended", (e) => {
+          console.log("Call has ended. Logging call id: ")
+          console.log(callId.current);
+        })
 
         retellWebClient.on("error", (error) => {
             console.error("An error occurred:", error);
@@ -113,6 +121,10 @@ const Conversation = () => {
         } else {
             try {
                 const registerCallResponse = await registerCall(agentId);
+                
+                // setCallId(registerCallResponse.call_id);
+                callId.current = registerCallResponse.call_id
+                console.log(callId.current)
                 if (registerCallResponse.access_token) {
                     await retellWebClient.startCall({
                         accessToken: registerCallResponse.access_token,

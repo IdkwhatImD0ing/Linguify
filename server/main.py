@@ -8,6 +8,7 @@ from concurrent.futures import TimeoutError as ConnectionTimeoutError
 from retell import Retell
 from llm import LlmClient
 import base64
+from convo_analysis import ConvoAnalysis
 
 def convert_image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
@@ -15,7 +16,6 @@ def convert_image_to_base64(image_path):
 
 image_path = "ramen.jpeg"
 DEFAULT_IMAGE = convert_image_to_base64(image_path)
-
 
 from custom_types import (
     ConfigResponse,
@@ -27,7 +27,11 @@ DEFAULT_LANGUAGE = "English"
 
 load_dotenv(override=True)
 app = FastAPI()
-retell = Retell(api_key=os.environ["RETELL_API_KEY"])
+retell = Retell(api_key=os.getenv("RETELL_API_KEY"))
+
+analyzer = ConvoAnalysis()
+
+# call_20dea7d7b87dac64ce8ce3e61a1
 
 @app.websocket("/llm-websocket/{call_id}")
 async def websocket_handler(websocket: WebSocket, call_id: str):
@@ -107,3 +111,8 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
         await websocket.close(1011, "Server error")
     finally:
         print(f"LLM WebSocket connection closed for {call_id}") 
+
+@app.get("/feedback/{call_id}")
+async def feedback(call_id: str):
+    feedback = analyzer.evaluate_conversation(call_id)
+    return {"feedback": json.loads(feedback) }

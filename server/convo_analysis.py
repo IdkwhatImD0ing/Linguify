@@ -2,13 +2,13 @@ import openai
 import requests
 import os
 from custom_types import Feedback
-
 from dotenv import load_dotenv
+
 class ConvoAnalysis:
 
     def get_conversation(self, conversation_id):
       
-        load_dotenv(override=True)
+        load_dotenv()
         """
         Fetch conversation data from Retell AI API.
         """
