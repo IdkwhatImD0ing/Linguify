@@ -3,7 +3,7 @@
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from 'next/navigation';
-import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
+import { LabelList, RadialBar, RadialBarChart } from "recharts";
 
 import {
     Card,
@@ -20,20 +20,43 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation"; // Add Aceternity's gradient animation
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation"; 
+
+// Arrange colors from lightest to darkest
+const colorPalette = ['#F5CA31', '#AADF69', '#30B8FB', '#ED8B35', '#385664'];
 
 const chartData = [
-    { skill: "Grammar", value: 80 },
-    { skill: "Listening", value: 70 },
-    { skill: "Speaking", value: 60 },
-    { skill: "Vocabulary", value: 75 },
-    { skill: "Pronunciation", value: 65 },
+    { skill: "Grammar", value: 80, fill: colorPalette[0] },
+    { skill: "Listening", value: 70, fill: colorPalette[1] },
+    { skill: "Speaking", value: 60, fill: colorPalette[2] },
+    { skill: "Vocabulary", value: 75, fill: colorPalette[3] },
+    { skill: "Pronunciation", value: 65, fill: colorPalette[4] },
 ];
 
 const chartConfig = {
     value: {
         label: "Skill Level",
-        color: "hsl(var(--chart-1))",
+        color: colorPalette[0],
+    },
+    Grammar: {
+        label: "Grammar",
+        color: colorPalette[0],
+    },
+    Listening: {
+        label: "Listening",
+        color: colorPalette[1],
+    },
+    Speaking: {
+        label: "Speaking",
+        color: colorPalette[2],
+    },
+    Vocabulary: {
+        label: "Vocabulary",
+        color: colorPalette[3],
+    },
+    Pronunciation: {
+        label: "Pronunciation",
+        color: colorPalette[4],
     },
 } satisfies ChartConfig;
 
@@ -110,23 +133,29 @@ export default function ProfilePage() {
                             </CardHeader>
                             <CardContent className="pb-0 mt-[-20px]">
                                 <ChartContainer
-                                    // config={chartConfig}
+                                    config={chartConfig}
                                     className="mx-auto aspect-square max-h-[225px] w-full"
                                 >
-                                    <RadarChart data={chartData}>
-                                        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                                        <PolarAngleAxis dataKey="skill" />
-                                        <PolarGrid />
-                                        <Radar
-                                            dataKey="value"
-                                            fill="#AADF69"
-                                            fillOpacity={0.6}
-                                            dot={{
-                                                r: 4,
-                                                fillOpacity: 1,
-                                            }}
+                                    <RadialBarChart
+                                        data={chartData}
+                                        startAngle={-90}
+                                        endAngle={380}
+                                        innerRadius={30}
+                                        outerRadius={110}
+                                    >
+                                        <ChartTooltip
+                                            cursor={false}
+                                            content={<ChartTooltipContent hideLabel nameKey="skill" />}
                                         />
-                                    </RadarChart>
+                                        <RadialBar dataKey="value" background>
+                                            <LabelList
+                                                position="insideStart"
+                                                dataKey="skill"
+                                                className="fill-white capitalize mix-blend-luminosity"
+                                                fontSize={11}
+                                            />
+                                        </RadialBar>
+                                    </RadialBarChart>
                                 </ChartContainer>
                             </CardContent>
                             <CardFooter className="flex-col gap-2 text-sm mb-[-10px]">

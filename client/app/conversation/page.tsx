@@ -2,8 +2,10 @@
 import { Feedback } from "@/types/api";
 import React, { useEffect, useState, useRef } from "react";
 import { RetellWebClient } from "retell-client-js-sdk";
-
-const agentId = "agent_3e6eb29bd647e7d27cde795417";
+import languageAgentMap from './agent_mappings.json';
+import languageMappings from './language_mappings.json';
+import { useSearchParams } from 'next/navigation'
+import { useAuth } from "@clerk/nextjs";
 
 interface RegisterCallResponse {
     access_token: string;
@@ -13,26 +15,34 @@ interface RegisterCallResponse {
 const retellWebClient = new RetellWebClient();
 
 const Conversation = () => {
-    const [isCalling, setIsCalling] = useState(false);
-    const [language, setLanguage] = useState("English");
-    const [imageBase64, setImageBase64] = useState("");
+    const { userId } = useAuth();
+    const isCalling = useRef(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [fullTranscript, setFullTranscript] = useState<any>([]);
     const callId = useRef("");
     const [feedback, setFeedback] = useState<Feedback>();
+    const searchParams = useSearchParams()
+    const agentId = languageAgentMap[searchParams.get('locale') as keyof typeof languageAgentMap] as string
+    const language = languageMappings[searchParams.get('locale') as keyof typeof languageMappings] as string
 
     // Reference to the end of the transcript for auto-scrolling
     const transcriptEndRef = useRef<HTMLDivElement>(null);
 
-    // Initialize the SDK and set up event listeners
+    // Initialize the SDK, set up event listeners, and start the call
     useEffect(() => {
+        if (!agentId || !language || !userId) {
+            // Wait until all data is available
+            return;
+        }
+
         retellWebClient.on("call_started", () => {
             console.log("Call started");
-            setIsCalling(true);
+            isCalling.current = true;
         });
 
         retellWebClient.on("call_ended", () => {
             console.log("Call ended");
-            setIsCalling(false);
+            isCalling.current = false;
         });
 
         retellWebClient.on("agent_start_talking", () => {
@@ -43,36 +53,24 @@ const Conversation = () => {
             console.log("Agent stopped talking");
         });
 
-        retellWebClient.on("audio", (audio) => {
-            // Handle audio if needed
-        });
-
         retellWebClient.on("update", (update) => {
             setFullTranscript((prevTranscript: any) => {
-                // Check if update.transcript has at least one message
                 if (update.transcript.length === 0) {
                     return prevTranscript;
                 }
 
-                // Get the last message from update.transcript
                 const newMessage = update.transcript[update.transcript.length - 1];
-
-                // Create a copy of the previous transcript
                 const updatedTranscript = [...prevTranscript];
 
                 if (updatedTranscript.length > 0) {
-                    // Get the last message from the previous transcript
                     const lastMessage = updatedTranscript[updatedTranscript.length - 1];
 
                     if (lastMessage.role === newMessage.role) {
-                        // Update the content of the last message
                         updatedTranscript[updatedTranscript.length - 1] = newMessage;
                     } else {
-                        // Append the new message
                         updatedTranscript.push(newMessage);
                     }
                 } else {
-                    // If the transcript is empty, add the new message
                     updatedTranscript.push(newMessage);
                 }
 
@@ -80,23 +78,48 @@ const Conversation = () => {
             });
         });
 
-
         retellWebClient.on("metadata", (metadata) => {
             // Handle metadata if needed
         });
 
         retellWebClient.on("call_ended", async (e) => {
-          console.log("Call has ended. Logging call id: ")
-          console.log(callId.current);
-          const convoFeedback = await getFeedback(callId.current);
-          console.log(convoFeedback)
-          // setFeedback(convoFeedback)
+            console.log("Call has ended. Logging call id: ")
+            console.log(callId.current);
+            const convoFeedback = await getFeedback(callId.current);
+            console.log(convoFeedback)
+            // setFeedback(convoFeedback)
         })
 
         retellWebClient.on("error", (error) => {
             console.error("An error occurred:", error);
             retellWebClient.stopCall();
+            setIsLoading(false);
         });
+
+        // Start the call automatically
+        const startConversation = async () => {
+            try {
+                if (isCalling.current || !userId || !agentId || !language) {
+                    return;
+                }
+                isCalling.current = true;
+                const registerCallResponse = await registerCall(agentId);
+
+                callId.current = registerCallResponse.call_id;
+                console.log(callId.current);
+                if (registerCallResponse.access_token) {
+                    await retellWebClient.startCall({
+                        accessToken: registerCallResponse.access_token,
+                    });
+                    setIsLoading(false); // Call has started, loading is done
+                }
+            } catch (error) {
+                console.error("Failed to start call:", error);
+                setIsLoading(false); // Even if it fails, stop loading
+            }
+        };
+
+        startConversation();
 
         // Cleanup on unmount
         return () => {
@@ -109,7 +132,7 @@ const Conversation = () => {
             retellWebClient.off("metadata");
             retellWebClient.off("error");
         };
-    }, []);
+    }, [agentId, language, userId]);
 
     // Auto-scroll to the latest message
     useEffect(() => {
@@ -117,29 +140,6 @@ const Conversation = () => {
             transcriptEndRef.current.scrollIntoView({ behavior: "smooth" });
         }
     }, [fullTranscript]);
-
-    const toggleConversation = async () => {
-        if (isCalling) {
-            retellWebClient.stopCall();
-        } else {
-            try {
-                const registerCallResponse = await registerCall(agentId);
-                
-                // setCallId(registerCallResponse.call_id);
-                callId.current = registerCallResponse.call_id
-                console.log(callId.current)
-                if (registerCallResponse.access_token) {
-                    await retellWebClient.startCall({
-                        accessToken: registerCallResponse.access_token,
-                        metadata: { language }, // Pass metadata if needed
-                    });
-                    setIsCalling(true);
-                }
-            } catch (error) {
-                console.error("Failed to start call:", error);
-            }
-        }
-    };
 
     async function registerCall(agentId: string): Promise<RegisterCallResponse> {
         try {
@@ -150,7 +150,7 @@ const Conversation = () => {
                 },
                 body: JSON.stringify({
                     agent_id: agentId,
-                    metadata: { language },
+                    metadata: { language, user_id: userId },
                 }),
             });
 
@@ -167,29 +167,35 @@ const Conversation = () => {
     }
 
     async function getFeedback(callId: string): Promise<any> {
-      try {
-          const response = await fetch("http://localhost:8000/feedback/" + callId);
+        try {
+            const response = await fetch("http://localhost:8000/feedback/" + callId);
 
-          if (!response.ok) {
-              throw new Error(`Error: ${response.status}`);
-          }
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
 
-          const data = await response.json();
-          return data;
-      } catch (err) {
-          console.error("Error getting call data:", err);
-          throw new Error("Failed to get call data");
-      }
-  }
+            const data = await response.json();
+            return data;
+        } catch (err) {
+            console.error("Error getting call data:", err);
+            throw new Error("Failed to get call data");
+        }
+    }
+
+    const endCall = () => {
+        retellWebClient.stopCall();
+    };
+
+    if (isLoading) {
+        return (
+            <div className="loading-screen" style={styles.loadingScreen}>
+                <p>Loading...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="conversation-container" style={styles.container}>
-            <header className="conversation-header" style={styles.header}>
-                <button onClick={toggleConversation} style={styles.button}>
-                    {isCalling ? "Stop" : "Start"} Conversation
-                </button>
-            </header>
-
             <main className="conversation-main" style={styles.main}>
                 <h2 style={styles.title}>Transcript</h2>
                 <div className="transcript" style={styles.transcript}>
@@ -199,7 +205,7 @@ const Conversation = () => {
                             style={{
                                 ...styles.message,
                                 ...(item.role === "agent" ? styles.agentMessage : styles.userMessage),
-                                opacity: item.isComplete ? 1 : 0.6, // Visual cue for incomplete messages
+                                opacity: item.isComplete ? 1 : 0.6,
                             }}
                         >
                             <strong>{item.role === "agent" ? "Agent" : "You"}:</strong> {item.content}
@@ -208,6 +214,11 @@ const Conversation = () => {
                     <div ref={transcriptEndRef} />
                 </div>
             </main>
+            <div style={styles.endCallButtonContainer}>
+                <button onClick={endCall} style={styles.endCallButton}>
+                    End Call
+                </button>
+            </div>
         </div>
     );
 };
@@ -222,21 +233,13 @@ const styles: { [key: string]: React.CSSProperties } = {
         fontFamily: "Arial, sans-serif",
         backgroundColor: "#f0f0f0",
     },
-    header: {
-        padding: "10px",
-        backgroundColor: "#282c34",
+    loadingScreen: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-    },
-    button: {
-        padding: "10px 20px",
-        fontSize: "16px",
-        cursor: "pointer",
-        borderRadius: "5px",
-        border: "none",
-        backgroundColor: "#61dafb",
-        color: "#000",
+        height: "100vh",
+        fontSize: "24px",
+        backgroundColor: "#f0f0f0",
     },
     main: {
         flex: 1,
@@ -271,6 +274,24 @@ const styles: { [key: string]: React.CSSProperties } = {
         backgroundColor: "#c8e6c9",
         alignSelf: "flex-end",
         marginLeft: "auto",
+    },
+    endCallButtonContainer: {
+        position: "fixed",
+        bottom: 0,
+        width: "100%",
+        padding: "10px",
+        backgroundColor: "#fff",
+        borderTop: "1px solid #ccc",
+    },
+    endCallButton: {
+        width: "100%",
+        padding: "15px",
+        fontSize: "18px",
+        cursor: "pointer",
+        borderRadius: "5px",
+        border: "none",
+        backgroundColor: "#ff4d4f",
+        color: "#fff",
     },
 };
 

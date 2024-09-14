@@ -11,6 +11,10 @@ from llm import LlmClient
 import base64
 from convo_analysis import ConvoAnalysis
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+
 def convert_image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
@@ -33,6 +37,15 @@ origins = [
     # Add other origins if needed
     # "https://yourdomain.com",
 ]
+
+# Fetch the service account key JSON file contents
+cred = credentials.Certificate('firebase_service_account.json')
+
+# Initialize the app with a service account, granting admin privileges
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://linguify-cfd48-default-rtdb.firebaseio.com'
+})
+
 
 
 app = FastAPI()
@@ -79,10 +92,14 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
             if request_json["interaction_type"] == "call_details":
                 print(json.dumps(request_json, indent=2))
                 language = request_json["call"]["metadata"].get("language", DEFAULT_LANGUAGE)
-                image_base64 = DEFAULT_IMAGE
+                user_id = request_json["call"]["metadata"].get("user_id", None)
+                # As an admin, the app has access to read and write all data, regradless of Security Rules
+                ref = db.reference('users')
+                user_data = ref.child(user_id).get()
+                image_base64 = user_data.get("latestUploadedImage", DEFAULT_IMAGE)
                 llm_client = LlmClient(language=language, image_base64=image_base64)
                 # Send first message to signal ready of server
-                first_event= llm_client.draft_begin_message()
+                first_event = await llm_client.draft_begin_message()
                 await websocket.send_json(first_event.__dict__)
                 return
             if request_json["interaction_type"] == "ping_pong":
