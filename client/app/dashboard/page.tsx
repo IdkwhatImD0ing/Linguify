@@ -36,11 +36,11 @@ export default function Dashboard() {
             </header>
 
             <main className="flex-grow px-4 space-y-4">
-                <h1 className="text-2xl font-bold text-gray-800">Ongoing Lesson</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Ongoing Lessons</h1>
                 <div className="grid grid-cols-2 gap-4">
                 {[...Array(6)].map((_, index) => (
                     <div key={index} className={`rounded-lg overflow-hidden ${index % 2 === 0 ? 'bg-blue-500' : 'bg-gray-300'}`}>
-                    <div className={`h-24 ${index % 2 === 0 ? 'bg-blue-400' : 'bg-gray-200'}`}></div>
+                    <div className={`h-24 bg-blue-400`}></div>
                     <div className="h-24 bg-white"></div>
                     </div>
                 ))}
