@@ -1,125 +1,84 @@
-'use client';
+"use client";
 
-import { useUser } from "@clerk/nextjs";
-import * as Avatar from "@radix-ui/react-avatar";
-import { Box, Heading, Card, CardBody, Text, Stack, StackDivider, Badge, Progress } from '@chakra-ui/react';
-import { ArrowLeft, Home, Camera, User, Settings, LogOut, Book, Award, Activity } from "lucide-react";
-import { useRouter, usePathname } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react'
+import { Progress, ChakraProvider } from "@chakra-ui/react"
+import { useUser } from "@clerk/nextjs"
+import { useRouter } from 'next/navigation'
 
 export default function ProfilePage() {
-    const router = useRouter();
-    const { user } = useUser();
-    const pathname = usePathname();
+    const { user } = useUser()
+    const router = useRouter()
 
     const handleNavigation = (route: string) => {
-        router.push(route);
-    };
+        router.push(route)
+    }
 
     return (
-        <div className="min-h-screen bg-gray-100">
-        <header className="bg-white shadow">
-            <Box className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <Heading as="h1" size="xl">Profile</Heading>
-            <Stack direction="row" spacing={4}>
-                <button className="bg-gray-200 p-2 rounded-full">
-                <Settings className="h-4 w-4" />
-                </button>
-                <button className="bg-gray-200 p-2 rounded-full">
-                <LogOut className="h-4 w-4" />
-                </button>
-            </Stack>
-            </Box>
-        </header>
-
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-            <Stack spacing={6} divider={<StackDivider />}>
-
-            {/* Profile Card */}
-            <Card>
-                <CardBody>
-                <Stack spacing={4} align="center">
-                    <Avatar.Root className="inline-flex items-center justify-center align-middle overflow-hidden rounded-full bg-gray-200 w-24 h-24">
-                    <Avatar.Image
-                        className="w-full h-full object-cover"
-                        src={user?.profileImageUrl}
-                        alt={user?.firstName || "User"}
-                    />
-                    <Avatar.Fallback className="text-white font-bold">
-                        {user?.firstName?.[0]}{user?.lastName?.[0]}
-                    </Avatar.Fallback>
-                    </Avatar.Root>
-                    <Box>
-                    <Heading size="lg">{user?.firstName} {user?.lastName}</Heading>
-                    <Text>Joined {new Date(user?.createdAt).toLocaleDateString()}</Text>
-                    <Stack direction="row" spacing={2} mt={2}>
-                        <Badge colorScheme="blue">English</Badge>
-                        <Badge colorScheme="green">Spanish</Badge>
-                        <Badge colorScheme="purple">French</Badge>
-                    </Stack>
-                    </Box>
-                </Stack>
-                </CardBody>
-            </Card>
-
-            {/* Language Progress */}
-            <Card>
-                <CardBody>
-                <Heading size="md" mb={4}>Language Progress</Heading>
-                <Stack spacing={4}>
-                    <Box>
-                    <Text>Spanish</Text>
-                    <Progress colorScheme="blue" size="sm" value={60} />
-                    </Box>
-                    <Box>
-                    <Text>French</Text>
-                    <Progress colorScheme="green" size="sm" value={35} />
-                    </Box>
-                    <Box>
-                    <Text>German</Text>
-                    <Progress colorScheme="purple" size="sm" value={10} />
-                    </Box>
-                </Stack>
-                </CardBody>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card>
-                <CardBody>
-                <Heading size="md" mb={4}>Recent Activity</Heading>
-                <Stack spacing={4}>
-                    <Box display="flex" alignItems="center">
-                    <Book className="h-5 w-5 mr-3 text-blue-500" />
-                    <Text>Completed Spanish Lesson 5 - 2 hours ago</Text>
-                    </Box>
-                    <Box display="flex" alignItems="center">
-                    <Award className="h-5 w-5 mr-3 text-yellow-500" />
-                    <Text>Earned "Early Bird" badge - Yesterday</Text>
-                    </Box>
-                    <Box display="flex" alignItems="center">
-                    <Activity className="h-5 w-5 mr-3 text-green-500" />
-                    <Text>7-day streak achieved - 3 days ago</Text>
-                    </Box>
-                </Stack>
-                </CardBody>
-            </Card>
-            
-            </Stack>
-        </main>
-
-        <nav className="bg-[#385664] text-[#F5F5F5] shadow-lg my-3 mx-10 py-4 flex justify-around items-center rounded-full">
-                <Home
-                    className="w-9 h-9 cursor-pointer"
+        <ChakraProvider>
+        <div className="min-h-screen bg-gray-100 p-4">
+        <header className="flex items-center p-4 relative">
+                <ArrowLeft 
+                    className="absolute left-4 w-6 h-6 text-[#385664] cursor-pointer" 
                     onClick={() => handleNavigation('/dashboard')}
                 />
-                <Camera
-                    className={`w-9 h-9 cursor-pointer ${pathname === '/camera' ? 'text-[#AADF69]' : 'text-white'}`}
-                    onClick={() => handleNavigation('/camera')}
-                />
-                <User
-                    className="w-9 h-9 cursor-pointer"
-                    onClick={() => handleNavigation('/profile')}
-                />
-            </nav>
+                <h1 className="flex-grow text-center ml-4 text-lg font-semibold text-[#385664]">Profile</h1>
+            </header>
+
+        <main className="flex flex-col items-center">
+            <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center mb-4">
+            {user?.imageUrl ? (
+                <img src={user.imageUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
+            ) : (
+                <svg className="w-16 h-16 text-gray-600" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path d="M50 95C74.8528 95 95 74.8528 95 50C95 25.1472 74.8528 5 50 5C25.1472 5 5 25.1472 5 50C5 74.8528 25.1472 95 50 95Z" />
+                <path d="M65 45C65 45 60 40 50 40C40 40 35 45 35 45" stroke="white" strokeWidth="4" strokeLinecap="round" />
+                <circle cx="35" cy="30" r="5" fill="white" />
+                <circle cx="65" cy="30" r="5" fill="white" />
+                <path d="M40 60C40 60 45 70 50 70C55 70 60 60 60 60" stroke="white" strokeWidth="4" strokeLinecap="round" />
+                </svg>
+            )}
+            </div>
+
+            <h2 className="text-2xl font-bold mb-1">{user?.fullName || 'Name'}</h2>
+            <p className="text-sm text-gray-600 mb-6">joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'date'}</p>
+
+            <div className="w-full max-w-md space-y-4 mb-6">
+            <h3 className="text-lg font-semibold mb-2">Language Progress</h3>
+            <div>
+                <div className="flex justify-between mb-1">
+                <span className="text-sm font-medium">Language #1</span>
+                <span className="text-sm font-medium">75%</span>
+                </div>
+                <Progress value={75} size="sm" colorScheme="blue" />
+            </div>
+            <div>
+                <div className="flex justify-between mb-1">
+                <span className="text-sm font-medium">Language #2</span>
+                <span className="text-sm font-medium">50%</span>
+                </div>
+                <Progress value={50} size="sm" colorScheme="green" />
+            </div>
+            </div>
+
+            <div className="w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-2">Overall Statistic</h3>
+            <div className="bg-gray-700 p-4 rounded-lg">
+                <svg viewBox="0 0 200 200" className="w-full h-auto">
+                <polygon points="100,10 190,80 160,190 40,190 10,80" fill="none" stroke="white" strokeWidth="0.5" />
+                <polygon points="100,40 160,80 140,150 60,150 40,80" fill="none" stroke="white" strokeWidth="0.5" />
+                <polygon points="100,70 130,90 120,130 80,130 70,90" fill="none" stroke="white" strokeWidth="0.5" />
+                <polygon points="100,100 100,10 190,80 100,100 160,190 100,100 40,190 100,100 10,80" fill="none" stroke="white" strokeWidth="0.5" />
+                <polygon points="100,10 145,60 160,120 120,170 80,170 40,120 55,60" fill="#3B82F6" fillOpacity="0.6" />
+                <text x="100" y="5" textAnchor="middle" fill="white" fontSize="8">Grammar</text>
+                <text x="195" y="85" textAnchor="start" fill="white" fontSize="8">Listening</text>
+                <text x="165" y="195" textAnchor="middle" fill="white" fontSize="8">Speaking</text>
+                <text x="35" y="195" textAnchor="middle" fill="white" fontSize="8">Vocabulary</text>
+                <text x="5" y="85" textAnchor="end" fill="white" fontSize="8">Pronunciation</text>
+                </svg>
+            </div>
+            </div>
+        </main>
         </div>
-    );
+        </ChakraProvider>
+    )
 }
