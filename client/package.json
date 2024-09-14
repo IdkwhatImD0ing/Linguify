@@ -11,6 +11,8 @@
   "dependencies": {
     "@clerk/nextjs": "^5.5.2",
     "firebase": "^10.13.1",
+    "@radix-ui/react-avatar": "^1.1.0",
+    "@radix-ui/react-progress": "^1.1.0",
     "lucide-react": "^0.441.0",
     "next": "14.2.11",
     "react": "^18",
