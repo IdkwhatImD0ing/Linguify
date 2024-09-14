@@ -2,10 +2,10 @@
 import { Webhook } from 'svix'
 import { headers } from 'next/headers'
 import { WebhookEvent } from '@clerk/nextjs/server'
-import { database } from '@/lib/firebase/config'
-import { set, ref, push } from "firebase/database";
 import { NextResponse } from 'next/server'
-import { User } from '@/types/api';
+import { User } from '@/types/api'
+
+import { db } from '@/lib/firebase/admin'
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response('Error occured -- no svix headers', {
+    return new Response('Error occurred -- no svix headers', {
       status: 400,
     })
   }
@@ -46,36 +46,42 @@ export async function POST(req: Request) {
     }) as WebhookEvent
   } catch (err) {
     console.error('Error verifying webhook:', err)
-    return new Response('Error occured', {
+    return new Response('Error occurred', {
       status: 400,
     })
   }
 
-  // Do something with the payload
-  // For this guide, you simply log the payload to the console
+  // Handle the user.created event
   const eventType = evt.type
-  if (eventType === "user.created") {
+  if (eventType === 'user.created') {
     try {
-      const usersRef = ref(database, "users");
-      const newUserRef = push(usersRef); // Generates a unique ID for the new user
+      const id = evt.data.id
 
+      // Reference the path 'users/{id}'
+      const userRef = db.ref(`users/${id}`)
+
+      // Prepare the user data
       const userData: User = {
+        uid: evt.data.id,
         email: evt.data.email_addresses[0].email_address,
         firstname: evt.data.first_name as string,
         lastname: evt.data.last_name as string,
         currentStreak: 0,
         highestStreak: 0,
-        uploadedImages: [],
-        interactions: []
+        interactions: [],
+        latestUploadedImage: ""
       }
 
-      set(newUserRef, userData);
+      // Set the data at 'users/{id}'
+      await userRef.set(userData)
+
       return NextResponse.json({
-        userId: newUserRef.key,
-        message: "Successfully Added User to firebase",
-      });
+        userId: id,
+        message: 'Successfully added user to Firebase',
+      })
     } catch (e) {
-      return NextResponse.error();
+      console.error('Error adding user to Firebase:', e)
+      return NextResponse.error()
     }
   }
 
