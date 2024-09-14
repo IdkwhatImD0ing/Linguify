@@ -57,18 +57,18 @@ export default function UploadPage() {
             const imageUrl = URL.createObjectURL(selectedFile);
             setImagePreviewUrl(imageUrl);
 
-            const b64 = await convertBlobToBase64(selectedFile);
-            localStorage.setItem("latestUploadedImage", b64);
-            await fetch("/api/image", {
-                method: "POST",
-                headers: {
-                "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                id: userId,
-                imageb64: b64,
-                }),
-            });
+        const b64 = await convertBlobToBase64(selectedFile);
+        // localStorage.setItem("latestUploadedImage", b64);
+        await fetch("/api/image", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            id: userId,
+            imageb64: b64,
+            }),
+        });
 
             console.log("File uploaded:", selectedFile.name);
             }
@@ -78,19 +78,14 @@ export default function UploadPage() {
             router.push(route);
         };
 
-        const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-            setLanguage(e.target.value);
-            // You can update the app's language setting here if needed
-        };
-
-    const handleStartCall = async () => {
-        if (!language) {
-        alert("Please select a language before starting the call.");
-        return;
-        }
-        console.log("Starting call to backend...");
-        await router.push(`/conversation?locale=${language.code}`);
-    };
+  const handleStartCall = async () => {
+    if (!language) {
+      alert("Please select a language before starting the call.");
+      return;
+    }
+    console.log("Starting call to backend...");
+    await router.push(`/conversation?locale=${language.code}`);
+  };
 
     const languages = [
         { code: "en-US", label: "English" },
