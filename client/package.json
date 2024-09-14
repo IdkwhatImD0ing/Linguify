@@ -9,11 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
     "@clerk/nextjs": "^5.5.2",
     "@ducanh2912/next-pwa": "^10.2.8",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-progress": "^1.1.0",
     "firebase": "^10.13.1",
+    "framer-motion": "^11.5.4",
     "lucide-react": "^0.441.0",
     "next": "14.2.11",
     "react": "^18",
