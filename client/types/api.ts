@@ -12,7 +12,7 @@ export interface RetellAIResponse {
 }
 
 export interface User {
-  id: string;
+  uid: string;
   email: string;
   firstname: string;
   lastname: string;

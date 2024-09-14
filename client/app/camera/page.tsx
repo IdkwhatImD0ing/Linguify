@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ArrowLeft, Home, Camera, User, Globe } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { database } from '@/lib/firebase/config'
-import { set, ref, push, query, orderByChild, equalTo, get } from "firebase/database";
+import { set, ref, push, get } from "firebase/database";
 import { useAuth } from "@clerk/nextjs";
 
 export function cn(...inputs: ClassValue[]) {
@@ -38,12 +38,15 @@ export default function UploadPage() {
             setFile(selectedFile);
             const b64 = await convertBlobToBase64(selectedFile);
             console.log(b64);
-            const usersRef = ref(database, "users");
-            const usersQuery = query(usersRef, orderByChild("id"), equalTo(userId as string));
-            const snapshot = await get(usersQuery);
-              
-            if(snapshot.exists()) console.log(snapshot.val())
+            const usersRef = ref(database, `users/${userId}`);
+            const data = await get(usersRef);
 
+            set(usersRef, {
+              ...data.val(),
+              latestUploadedImage: b64
+            })
+
+            
 
             console.log("File uploaded:", selectedFile.name);
         }
@@ -59,10 +62,11 @@ export default function UploadPage() {
         // For example: updateAppLanguage(e.target.value)
     };
 
-    const handleStartCall = () => {
+    const handleStartCall = async () => {
         // Here you would implement the logic to start the call
         // For example: startBackendCall()
         console.log("Starting call to backend...");
+        await router.push("/conversation");
     };
 
     return (
@@ -107,7 +111,7 @@ export default function UploadPage() {
                         "hover:before:opacity-100"
                     )}
                 >
-                    <div className="relative z-10 bg-white rounded-xl p-6 flex flex-col items-center shadow-lg">
+                    <div className="relative z-10 bg-white rounded-xl p-6 flex flex-col items-center">
                         <div className="relative w-40 h-40 mb-4">
                             <Image
                                 src="/assets/icon-dark.png"
