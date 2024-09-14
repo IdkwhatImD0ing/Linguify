@@ -14,10 +14,10 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="min-h-screen w-full bg-[#E9E6E6] flex flex-col">
-            <header className="flex justify-between items-center p-4">
+        <div className="min-h-screen w-full bg-[#E9E6E6] flex flex-col pt-8">
+            <header className="flex justify-between items-center py-2 px-4">
                 <div className="flex items-center space-x-2">
-                    <div className="relative w-10 h-10">
+                    <div className="relative w-12 h-12">
                         <Image
                         src="/assets/icon-dark.png"
                         alt="Linguify Logo"
@@ -28,9 +28,15 @@ export default function Dashboard() {
                     </div>
                     <span className="font-bold text-lg text-gray-800">210</span>
                 </div>
-                <div className="w-8 h-8  rounded-full"> 
+                <div className="w-11 h-7 rounded-full"> 
                     <SignedIn>
-                        <UserButton />
+                        <UserButton 
+                            appearance={{
+                                elements: {
+                                    avatarBox: 'w-10 h-10',
+                                },
+                            }}
+                        />
                     </SignedIn>
                 </div>
             </header>
@@ -39,9 +45,13 @@ export default function Dashboard() {
                 <h1 className="text-2xl font-bold text-gray-800">Ongoing Lessons</h1>
                 <div className="grid grid-cols-2 gap-4">
                 {[...Array(6)].map((_, index) => (
-                    <div key={index} className={`rounded-lg overflow-hidden ${index % 2 === 0 ? 'bg-blue-500' : 'bg-gray-300'}`}>
-                    <div className={`h-24 bg-blue-400`}></div>
-                    <div className="h-24 bg-white"></div>
+                    <div key={index} className={` rounded-lg overflow-hidden shadow-lg`}>
+                        <div className={`h-24 bg-[#AADF69]`}></div>
+                        <div className="h-24 bg-[#F5F5F5]">
+                            <h4 className="text-sm font-semibold text-[#ADADAD] pt-2 px-2">English</h4>
+                            <h2 className="font-bold text-2xl text-[#385664] px-2">Title</h2>
+                            <button className="bg-[#30B8FB] text-white flex justify-center mt-[-2px] items-center rounded-full w-32 h-7 m-2 px-3 py-2 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300">Enter</button>
+                        </div>
                     </div>
                 ))}
                 </div>

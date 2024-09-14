@@ -1,116 +1,125 @@
-// import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
-// import { Button } from "../../components/ui/button";
-// import { Progress } from "../../components/ui/progress";
-// import { Badge } from "../../components/ui/badge";
-// import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-// import { Settings, LogOut, Book, Award, Activity } from "lucide-react"
+'use client';
 
-// export default function ProfilePage() {
-//     return (
-//         <div className="min-h-screen bg-gray-100">
-//         <header className="bg-white shadow">
-//             <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-//             <h1 className="text-3xl font-bold text-gray-900">Profile</h1>
-//             <div className="flex space-x-2">
-//                 <Button variant="outline" size="icon">
-//                 <Settings className="h-4 w-4" />
-//                 </Button>
-//                 <Button variant="outline" size="icon">
-//                 <LogOut className="h-4 w-4" />
-//                 </Button>
-//             </div>
-//             </div>
-//         </header>
+import { useUser } from "@clerk/nextjs";
+import * as Avatar from "@radix-ui/react-avatar";
+import { Box, Heading, Card, CardBody, Text, Stack, StackDivider, Badge, Progress } from '@chakra-ui/react';
+import { ArrowLeft, Home, Camera, User, Settings, LogOut, Book, Award, Activity } from "lucide-react";
+import { useRouter, usePathname } from 'next/navigation';
 
-//         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-//             <div className="px-4 py-6 sm:px-0">
-//             <div className="flex flex-col md:flex-row gap-6">
-//                 <div className="md:w-1/3">
-//                 <Card>
-//                     <CardContent className="pt-6">
-//                     <div className="flex flex-col items-center">
-//                         <Avatar className="w-24 h-24">
-//                         <AvatarImage src="https://github.com/shadcn.png" alt="User" />
-//                         <AvatarFallback>JD</AvatarFallback>
-//                         </Avatar>
-//                         <h2 className="mt-4 text-2xl font-bold">John Doe</h2>
-//                         <p className="text-muted-foreground">Joined January 2023</p>
-//                         <div className="mt-4 flex space-x-2">
-//                         <Badge>English</Badge>
-//                         <Badge>Spanish</Badge>
-//                         <Badge>French</Badge>
-//                         </div>
-//                     </div>
-//                     </CardContent>
-//                 </Card>
-//                 </div>
+export default function ProfilePage() {
+    const router = useRouter();
+    const { user } = useUser();
+    const pathname = usePathname();
 
-//                 <div className="md:w-2/3 space-y-6">
-//                 <Card>
-//                     <CardHeader>
-//                     <CardTitle>Language Progress</CardTitle>
-//                     </CardHeader>
-//                     <CardContent>
-//                     <div className="space-y-4">
-//                         <div>
-//                         <div className="flex justify-between mb-1">
-//                             <span className="text-sm font-medium">Spanish</span>
-//                             <span className="text-sm font-medium">60%</span>
-//                         </div>
-//                         <Progress value={60} className="w-full" />
-//                         </div>
-//                         <div>
-//                         <div className="flex justify-between mb-1">
-//                             <span className="text-sm font-medium">French</span>
-//                             <span className="text-sm font-medium">35%</span>
-//                         </div>
-//                         <Progress value={35} className="w-full" />
-//                         </div>
-//                         <div>
-//                         <div className="flex justify-between mb-1">
-//                             <span className="text-sm font-medium">German</span>
-//                             <span className="text-sm font-medium">10%</span>
-//                         </div>
-//                         <Progress value={10} className="w-full" />
-//                         </div>
-//                     </div>
-//                     </CardContent>
-//                 </Card>
+    const handleNavigation = (route: string) => {
+        router.push(route);
+    };
 
-//                 <Card>
-//                     <CardHeader>
-//                     <CardTitle>Recent Activity</CardTitle>
-//                     </CardHeader>
-//                     <CardContent>
-//                     <ul className="space-y-4">
-//                         <li className="flex items-center">
-//                         <Book className="h-5 w-5 mr-3 text-blue-500" />
-//                         <div>
-//                             <p className="text-sm font-medium">Completed Spanish Lesson 5</p>
-//                             <p className="text-xs text-muted-foreground">2 hours ago</p>
-//                         </div>
-//                         </li>
-//                         <li className="flex items-center">
-//                         <Award className="h-5 w-5 mr-3 text-yellow-500" />
-//                         <div>
-//                             <p className="text-sm font-medium">Earned "Early Bird" badge</p>
-//                             <p className="text-xs text-muted-foreground">Yesterday</p>
-//                         </div>
-//                         </li>
-//                         <li className="flex items-center">
-//                         <Activity className="h-5 w-5 mr-3 text-green-500" />
-//                         <div>
-//                             <p className="text-sm font-medium">7-day streak achieved!</p>
-//                             <p className="text-xs text-muted-foreground">3 days ago</p>
-//                         </div>
-//                         </li>
-//                     </ul>
-//                     </CardContent>
-//                 </Card>
-//                 </div>
-//             </div>
-//             </div>
-//         </main>
-//         </div>
-//     )
-// }
+    return (
+        <div className="min-h-screen bg-gray-100">
+        <header className="bg-white shadow">
+            <Box className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <Heading as="h1" size="xl">Profile</Heading>
+            <Stack direction="row" spacing={4}>
+                <button className="bg-gray-200 p-2 rounded-full">
+                <Settings className="h-4 w-4" />
+                </button>
+                <button className="bg-gray-200 p-2 rounded-full">
+                <LogOut className="h-4 w-4" />
+                </button>
+            </Stack>
+            </Box>
+        </header>
+
+        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <Stack spacing={6} divider={<StackDivider />}>
+
+            {/* Profile Card */}
+            <Card>
+                <CardBody>
+                <Stack spacing={4} align="center">
+                    <Avatar.Root className="inline-flex items-center justify-center align-middle overflow-hidden rounded-full bg-gray-200 w-24 h-24">
+                    <Avatar.Image
+                        className="w-full h-full object-cover"
+                        src={user?.profileImageUrl}
+                        alt={user?.firstName || "User"}
+                    />
+                    <Avatar.Fallback className="text-white font-bold">
+                        {user?.firstName?.[0]}{user?.lastName?.[0]}
+                    </Avatar.Fallback>
+                    </Avatar.Root>
+                    <Box>
+                    <Heading size="lg">{user?.firstName} {user?.lastName}</Heading>
+                    <Text>Joined {new Date(user?.createdAt).toLocaleDateString()}</Text>
+                    <Stack direction="row" spacing={2} mt={2}>
+                        <Badge colorScheme="blue">English</Badge>
+                        <Badge colorScheme="green">Spanish</Badge>
+                        <Badge colorScheme="purple">French</Badge>
+                    </Stack>
+                    </Box>
+                </Stack>
+                </CardBody>
+            </Card>
+
+            {/* Language Progress */}
+            <Card>
+                <CardBody>
+                <Heading size="md" mb={4}>Language Progress</Heading>
+                <Stack spacing={4}>
+                    <Box>
+                    <Text>Spanish</Text>
+                    <Progress colorScheme="blue" size="sm" value={60} />
+                    </Box>
+                    <Box>
+                    <Text>French</Text>
+                    <Progress colorScheme="green" size="sm" value={35} />
+                    </Box>
+                    <Box>
+                    <Text>German</Text>
+                    <Progress colorScheme="purple" size="sm" value={10} />
+                    </Box>
+                </Stack>
+                </CardBody>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card>
+                <CardBody>
+                <Heading size="md" mb={4}>Recent Activity</Heading>
+                <Stack spacing={4}>
+                    <Box display="flex" alignItems="center">
+                    <Book className="h-5 w-5 mr-3 text-blue-500" />
+                    <Text>Completed Spanish Lesson 5 - 2 hours ago</Text>
+                    </Box>
+                    <Box display="flex" alignItems="center">
+                    <Award className="h-5 w-5 mr-3 text-yellow-500" />
+                    <Text>Earned "Early Bird" badge - Yesterday</Text>
+                    </Box>
+                    <Box display="flex" alignItems="center">
+                    <Activity className="h-5 w-5 mr-3 text-green-500" />
+                    <Text>7-day streak achieved - 3 days ago</Text>
+                    </Box>
+                </Stack>
+                </CardBody>
+            </Card>
+            
+            </Stack>
+        </main>
+
+        <nav className="bg-[#385664] text-[#F5F5F5] shadow-lg my-3 mx-10 py-4 flex justify-around items-center rounded-full">
+                <Home
+                    className="w-9 h-9 cursor-pointer"
+                    onClick={() => handleNavigation('/dashboard')}
+                />
+                <Camera
+                    className={`w-9 h-9 cursor-pointer ${pathname === '/camera' ? 'text-[#AADF69]' : 'text-white'}`}
+                    onClick={() => handleNavigation('/camera')}
+                />
+                <User
+                    className="w-9 h-9 cursor-pointer"
+                    onClick={() => handleNavigation('/profile')}
+                />
+            </nav>
+        </div>
+    );
+}
