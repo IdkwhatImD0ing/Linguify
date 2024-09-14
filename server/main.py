@@ -97,4 +97,4 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
         print(f"Error in LLM WebSocket: {e} for {call_id}")
         await websocket.close(1011, "Server error")
     finally:
-        print(f"LLM WebSocket connection closed for {call_id}")
+        print(f"LLM WebSocket connection closed for {call_id}") 

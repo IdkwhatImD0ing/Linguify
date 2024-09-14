@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Poppins } from "next/font/google";
 
 import {
   ClerkProvider,
@@ -10,15 +11,21 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+// const geistSans = localFont({
+//   src: "./fonts/GeistVF.woff",
+//   variable: "--font-geist-sans",
+//   weight: "100 900",
+// });
+// const geistMono = localFont({
+//   src: "./fonts/GeistMonoVF.woff",
+//   variable: "--font-geist-mono",
+//   weight: "100 900",
+// });
+
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700"], // Choose weights as needed
+  subsets: ["latin"], // Support Latin characters
+  variable: "--font-poppins", // Custom CSS variable for the font
 });
 
 export const metadata: Metadata = {
@@ -35,14 +42,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${poppins.variable} ${poppins.variable} antialiased`}
         >
           {/* <SignedOut>
             <SignInButton />
           </SignedOut> */}
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
           {children}
         </body>
       </html>
