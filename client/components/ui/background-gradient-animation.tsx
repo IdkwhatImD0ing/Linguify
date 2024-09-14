@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 export const BackgroundGradientAnimation = ({
     gradientBackgroundStart = "#F5F5F5",
     gradientBackgroundEnd = "#F5F5F5",
-    firstColor = "48, 184, 251",  // 30B8FB in RGB
-    secondColor = "170, 223, 105", // AADF69 in RGB
+    firstColor = "230, 240, 255",  // E6F0FF in RGB (Extremely Light Blue)
+    secondColor = "235, 255, 235", // EBFFEB in RGB (Extremely Light Green)
     thirdColor = "48, 184, 251",  // 30B8FB in RGB
     fourthColor = "170, 223, 105", // AADF69 in RGB
     fifthColor = "245, 245, 245", // F5F5F5 in RGB
