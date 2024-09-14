@@ -3,7 +3,7 @@
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from 'next/navigation';
-import { LabelList, RadialBar, RadialBarChart } from "recharts";
+import { LabelList, RadialBar, RadialBarChart, PolarAngleAxis, Legend } from "recharts";
 
 import {
     Card,
@@ -132,33 +132,58 @@ export default function ProfilePage() {
                                 <CardDescription>Your language skills breakdown</CardDescription>
                             </CardHeader>
                             <CardContent className="pb-0 mt-[-20px]">
-                                <ChartContainer
-                                    // config={chartConfig}
-                                    className="mx-auto aspect-square max-h-[225px] w-full"
-                                >
-                                    <RadialBarChart
-                                        data={chartData}
-                                        startAngle={-90}
-                                        endAngle={380}
-                                        innerRadius={30}
-                                        outerRadius={110}
+                                <div className="relative bg-[#A2BACF] bg-opacity-30 rounded-lg shadow-md overflow-hidden mb-3">
+                                    <ChartContainer
+                                        config={chartConfig}
+                                        className="mx-full aspect-square max-h-[300px] w-full mr-20"
                                     >
-                                        <ChartTooltip
-                                            cursor={false}
-                                            content={<ChartTooltipContent />}
-                                        />
-                                        <RadialBar dataKey="value" background>
-                                            <LabelList
-                                                position="insideStart"
-                                                dataKey="skill"
-                                                className="fill-white capitalize mix-blend-luminosity"
-                                                fontSize={11}
+                                        <RadialBarChart
+                                            data={chartData}
+                                            startAngle={-90}
+                                            endAngle={270}
+                                            innerRadius="20%"
+                                            outerRadius="100%"
+                                        >
+                                            <PolarAngleAxis
+                                                type="number"
+                                                domain={[0, 100]}
+                                                angleAxisId={0}
+                                                tick={false}
                                             />
-                                        </RadialBar>
-                                    </RadialBarChart>
-                                </ChartContainer>
+                                            <RadialBar
+                                                background
+                                                dataKey="value"
+                                                cornerRadius={15}
+                                                barSize={20}
+                                                minAngle={35}
+                                            >
+                                                <LabelList
+                                                    dataKey="skill"
+                                                    position="insideStart"
+                                                    fill="#f5f5f5"
+                                                    fontSize={12}
+                                                    fontWeight="semibold"
+                                                />
+                                            </RadialBar>
+                                            <Legend
+                                                wrapperStyle={{
+                                                    paddingLeft: '20px',  // Add left padding to the legend
+                                                }}
+                                                iconSize={10}
+                                                layout="vertical"
+                                                verticalAlign="middle"
+                                                align="right"
+                                                formatter={(value, entry) => (
+                                                    <span style={{ color: entry.color }}>
+                                                        {value}:{entry.payload.value}%
+                                                    </span>
+                                                )}
+                                            />
+                                        </RadialBarChart>
+                                    </ChartContainer>
+                                </div>
                             </CardContent>
-                            <CardFooter className="flex-col gap-2 text-sm mb-[-10px]">
+                            <CardFooter className="flex-col gap-2 text-sm">
                                 <div className="flex items-center gap-2 font-medium leading-none">
                                     Improving by 5.2% this month <TrendingUp className="h-4 w-4" />
                                 </div>
