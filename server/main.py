@@ -48,8 +48,6 @@ retell = Retell(api_key=os.getenv("RETELL_API_KEY"))
 
 analyzer = ConvoAnalysis()
 
-# call_20dea7d7b87dac64ce8ce3e61a1
-
 @app.websocket("/llm-websocket/{call_id}")
 async def websocket_handler(websocket: WebSocket, call_id: str):
     try:

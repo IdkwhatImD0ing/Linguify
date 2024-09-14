@@ -12,8 +12,6 @@ import { db } from '@/lib/firebase/admin'
 export async function POST(req: Request) {
   // Get the body
   const payload: UploadImagePayload = await req.json();
-  console.log(payload)
-  
 
   try {
     const userRef = db.ref(`users/${payload.id}`)
