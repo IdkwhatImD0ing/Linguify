@@ -94,24 +94,38 @@ export default function UploadPage() {
 
         <div className="flex items-center mt-2">
           <Globe className="w-5 h-5 text-[#385664] mr-2" />
-          <select
-            value={language}
-            onChange={handleLanguageChange}
-            className="bg-transparent text-[#385664] border border-[#385664] rounded-md px-2 py-1 text-sm"
-          >
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="zh">中文</option>
-            <option value="ko">한국어</option>
-            <option value="ja">日本語</option>
-            <option value="ar">العربية</option>
-            <option value="hi">हिन्दी</option>
-            <option value="pt">Português</option>
-            <option value="ru">Русский</option>
-            <option value="it">Italiano</option>
-          </select>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="bg-transparent text-[#385664] border border-[#385664] rounded-md px-2 py-1 text-sm flex items-center hover:bg-[#385664] hover:text-white transition-colors">
+              {language === 'en' ? 'English' : 
+               language === 'es' ? 'Español' : 
+               language === 'fr' ? 'Français' : 
+               language === 'de' ? 'Deutsch' : 
+               language === 'zh' ? '中文' : 
+               language === 'ko' ? '한국어' : 
+               language === 'ja' ? '日本語' : 
+               language === 'ar' ? 'العربية' : 
+               language === 'hi' ? 'हिन्दी' : 
+               language === 'pt' ? 'Português' : 
+               language === 'ru' ? 'Русский' : 
+               language === 'it' ? 'Italiano' : 
+               'Select Language'}
+              <span className="ml-2">▼</span>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white border border-gray-200 rounded-md shadow-lg">
+              <DropdownMenuItem onSelect={() => handleLanguageChange('en')} className="hover:bg-[#385664] hover:text-white transition-colors">English</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('es')} className="hover:bg-[#385664] hover:text-white transition-colors">Español</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('fr')} className="hover:bg-[#385664] hover:text-white transition-colors">Français</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('de')} className="hover:bg-[#385664] hover:text-white transition-colors">Deutsch</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('zh')} className="hover:bg-[#385664] hover:text-white transition-colors">中文</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('ko')} className="hover:bg-[#385664] hover:text-white transition-colors">한국어</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('ja')} className="hover:bg-[#385664] hover:text-white transition-colors">日本語</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('ar')} className="hover:bg-[#385664] hover:text-white transition-colors">العربية</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('hi')} className="hover:bg-[#385664] hover:text-white transition-colors">हिन्दी</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('pt')} className="hover:bg-[#385664] hover:text-white transition-colors">Português</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('ru')} className="hover:bg-[#385664] hover:text-white transition-colors">Русский</DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => handleLanguageChange('it')} className="hover:bg-[#385664] hover:text-white transition-colors">Italiano</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
