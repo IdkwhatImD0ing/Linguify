@@ -11,6 +11,11 @@ export interface RetellAIResponse {
     status: string;
 }
 
+export interface UploadImagePayload {
+  id: string;
+  imageb64: string;
+}
+
 export interface User {
   uid: string;
   email: string;
