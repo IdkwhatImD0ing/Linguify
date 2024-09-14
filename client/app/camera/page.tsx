@@ -57,10 +57,13 @@ export default function UploadPage() {
     return (
         <div className="h-screen w-full flex flex-col bg-cover bg-center pt-8"
             style={{ backgroundImage: `url('/assets/bgc.png')` }}>
-            <header className="flex items-center justify-between p-4 relative">
-                <ArrowLeft className="w-6 h-6 text-[#385664] cursor-pointer" onClick={() => handleNavigation('/dashboard')}/>
-                <h1 className="text-center text-lg font-semibold text-[#385664]">Linguify your conversation</h1>
-                <div className="flex items-center">
+            <header className="flex flex-col items-center justify-between p-4 relative">
+                <div className="flex items-center justify-between w-full">
+                    <ArrowLeft className="w-6 h-6 text-[#385664] cursor-pointer" onClick={() => handleNavigation('/dashboard')}/>
+                    <h1 className="text-center text-lg font-semibold text-[#385664] flex-grow">Linguify your conversation</h1>                
+                </div>
+                
+                <div className="flex items-center mt-2">
                     <Globe className="w-5 h-5 text-[#385664] mr-2" />
                     <select
                         value={language}
