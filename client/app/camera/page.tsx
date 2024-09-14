@@ -9,7 +9,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+return twMerge(clsx(inputs));
 }
 
 export default function UploadPage() {
@@ -20,19 +20,19 @@ export default function UploadPage() {
   const [language, setLanguage] = useState('en-US');
   const { userId } = useAuth();
 
-  const convertBlobToBase64 = async (blob: any) => {
+const convertBlobToBase64 = async (blob: any) => {
     return await blobToBase64(blob);
-  };
+};
 
-  const blobToBase64 = (blob: any) =>
+const blobToBase64 = (blob: any) =>
     new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
     });
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile);
@@ -45,23 +45,23 @@ export default function UploadPage() {
       await fetch("/api/upload", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: userId,
-          imageb64: b64,
+        id: userId,
+        imageb64: b64,
         }),
-      });
+    });
 
-      console.log("File uploaded:", selectedFile.name);
+    console.log("File uploaded:", selectedFile.name);
     }
-  };
+};
 
-  const handleNavigation = (route: string) => {
+const handleNavigation = (route: string) => {
     router.push(route);
-  };
+};
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setLanguage(e.target.value);
     // You can update the app's language setting here if needed
   };
@@ -71,20 +71,20 @@ export default function UploadPage() {
     await router.push(`/conversation?locale=${language}`);
   };
 
-  return (
+return (
     <div
-      className="h-screen w-full flex flex-col bg-cover bg-center pt-8"
-      style={{ backgroundImage: `url('/assets/bgc.png')` }}
+        className="h-screen w-full flex flex-col bg-cover bg-center pt-8"
+        style={{ backgroundImage: `url('/assets/bgc.png')` }}
     >
-      <header className="flex flex-col items-center justify-between p-4 relative">
+    <header className="flex flex-col items-center justify-between p-4 relative">
         <div className="flex items-center justify-between w-full">
-          <ArrowLeft
+        <ArrowLeft
             className="w-6 h-6 text-[#385664] cursor-pointer"
             onClick={() => handleNavigation("/dashboard")}
-          />
-          <h1 className="text-center text-lg font-semibold text-[#385664] flex-grow">
+        />
+        <h1 className="text-center text-lg font-semibold text-[#385664] flex-grow">
             Linguify your conversation
-          </h1>
+        </h1>
         </div>
 
         <div className="flex items-center mt-2">
@@ -111,7 +111,7 @@ export default function UploadPage() {
             <option value="vi-VN">Tiếng Việt</option>
           </select>
         </div>
-      </header>
+        </header>
 
       <main className="flex-grow flex flex-col items-center justify-center px-4 space-y-6">
         <label
@@ -161,29 +161,29 @@ export default function UploadPage() {
           )}
         </label>
 
-        <input
-          type="file"
-          id="file-upload"
-          className="hidden"
-          onChange={handleFileChange}
-          accept="image/*"
-        />
+            <input
+            type="file"
+            id="file-upload"
+            className="hidden"
+            onChange={handleFileChange}
+            accept="image/*"
+            />
 
-        {file ? (
-          <button
-            onClick={handleStartCall}
-            className="bg-[#AADF69] text-white px-14 py-3 rounded-full text-lg font-semibold hover:bg-green-500 transition-colors cursor-pointer"
-          >
-            Start call »
-          </button>
-        ) : (
-          <p className="text-[#385664]">Upload a file to start the call</p>
-        )}
+            {file ? (
+            <button
+                onClick={handleStartCall}
+                className="bg-[#AADF69] text-white px-14 py-3 rounded-full text-lg font-semibold hover:bg-green-500 transition-colors cursor-pointer"
+            >
+                Start call »
+            </button>
+            ) : (
+            <p className="text-[#385664]">Upload a file to start the call</p>
+            )}
 
-        {file && (
-          <p className="text-[#3F3F44] mt-2">File: {file.name} uploaded!</p>
-        )}
-      </main>
+            {file && (
+            <p className="text-[#3F3F44] mt-2">File: {file.name} uploaded!</p>
+            )}
+        </main>
 
       <nav className="bg-[#385664] text-[#F5F5F5] shadow-lg my-3 mx-10 py-4 flex justify-around items-center rounded-full">
         <Home
