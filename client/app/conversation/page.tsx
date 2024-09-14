@@ -28,11 +28,22 @@ const Conversation = () => {
     // Reference to the end of the transcript for auto-scrolling
     const transcriptEndRef = useRef<HTMLDivElement>(null);
 
+    // State to hold the image URL
+    const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
+
+    console.log(feedback)
+
     // Initialize the SDK, set up event listeners, and start the call
     useEffect(() => {
         if (!agentId || !language || !userId) {
             // Wait until all data is available
             return;
+        }
+
+        // Retrieve the image from local storage
+        const storedImage = localStorage.getItem("latestUploadedImage");
+        if (storedImage) {
+            setImagePreviewUrl(storedImage);
         }
 
         retellWebClient.on("call_started", () => {
@@ -86,8 +97,7 @@ const Conversation = () => {
             console.log("Call has ended. Logging call id: ")
             console.log(callId.current);
             const convoFeedback = await getFeedback(callId.current);
-            console.log(convoFeedback)
-            // setFeedback(convoFeedback)
+            setFeedback(convoFeedback);
         })
 
         retellWebClient.on("error", (error) => {
@@ -106,7 +116,8 @@ const Conversation = () => {
                 const registerCallResponse = await registerCall(agentId);
 
                 callId.current = registerCallResponse.call_id;
-                console.log(callId.current);
+                console.log("---- FOUND CALL ID ------")
+                
                 if (registerCallResponse.access_token) {
                     await retellWebClient.startCall({
                         accessToken: registerCallResponse.access_token,
@@ -168,13 +179,14 @@ const Conversation = () => {
 
     async function getFeedback(callId: string): Promise<any> {
         try {
-            const response = await fetch("http://localhost:8000/feedback/" + callId);
+            const response = await fetch("/api/feedback/" + callId);
 
             if (!response.ok) {
                 throw new Error(`Error: ${response.status}`);
             }
 
             const data = await response.json();
+            console.log(data)
             return data;
         } catch (err) {
             console.error("Error getting call data:", err);
@@ -196,6 +208,11 @@ const Conversation = () => {
 
     return (
         <div className="conversation-container" style={styles.container}>
+            {imagePreviewUrl && (
+                <div className="image-preview" style={styles.imagePreviewContainer}>
+                    <img src={imagePreviewUrl} alt="Uploaded" style={styles.imagePreview} />
+                </div>
+            )}
             <main className="conversation-main" style={styles.main}>
                 <h2 style={styles.title}>Transcript</h2>
                 <div className="transcript" style={styles.transcript}>
@@ -240,6 +257,19 @@ const styles: { [key: string]: React.CSSProperties } = {
         height: "100vh",
         fontSize: "24px",
         backgroundColor: "#f0f0f0",
+    },
+    imagePreviewContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "10px",
+        backgroundColor: "#ffffff",
+        borderBottom: "1px solid #ccc",
+    },
+    imagePreview: {
+        maxWidth: "100%",
+        maxHeight: "200px",
+        objectFit: "contain",
     },
     main: {
         flex: 1,

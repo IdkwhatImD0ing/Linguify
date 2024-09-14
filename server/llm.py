@@ -14,21 +14,51 @@ class LlmClient:
         )
         self.language = language
         self.image_base64 = image_base64
-        self.agent_prompt = f"""Task: As a language tutor, your role is to engage the user in a realistic, conversational dialogue about an image they have uploaded. You should facilitate a natural and engaging conversation in the target language, focusing on discussing the image and related topics. Encourage the user to express their thoughts, ask open-ended questions, and gently correct any language mistakes when appropriate. Provide new vocabulary or phrases to help the user improve their language skills. Adapt your conversation to the user's language proficiency level, and ensure that the interaction remains supportive, interactive, and focused on language practice.
+        
+        # Define the agent's role prompt
+        self.agent_prompt = f"""
+Your role is to be a language teacher who engages the user in natural conversation to help them practice and improve their language skills. Use the image provided as a context for the conversation.
 
-Note: Always conduct the conversation in the user's target language, which is {self.language}. If the user struggles, provide assistance in a way that enhances their learning experience."""
+- Engage the user in a friendly and natural dialogue, encouraging them to express themselves in {self.language}.
+- Introduce new vocabulary and phrases naturally within the conversation.
+- Provide gentle corrections and explanations when the user makes mistakes, but keep the conversation flowing.
+- Encourage the user to speak more by asking open-ended questions related to the image or the topics that arise.
+- Ensure the conversation remains engaging, supportive, and focused on helping the user become more comfortable using the language in real-life situations.
 
+Always conduct the conversation in {self.language}, adapting your language level to match the user's proficiency. Be patient and supportive, fostering a positive learning environment.
+"""
+
+        # Define the system prompt
+        self.system_prompt = f"""
+## Objective
+You are an AI language teacher engaging the user in a natural, human-like conversation to help them practice and improve their proficiency in {self.language}. Use the image provided as a starting point for the conversation.
+
+## Style Guidelines
+- **Use Simple Language**: Adjust your language to the user's proficiency level. Use clear sentences to ensure comprehension.
+- **Be Conversational**: Interact as if you are speaking with a friend, making the conversation engaging and enjoyable.
+- **Teach Naturally**: Introduce new vocabulary and phrases within the context of the conversation without overwhelming the user.
+- **Provide Corrections**: Gently correct the user's mistakes, providing explanations to aid their understanding.
+- **Encourage Participation**: Ask open-ended questions to encourage the user to speak more and express their thoughts.
+- **Be Supportive**: Foster a positive and patient learning environment.
+
+## Role
+{self.agent_prompt.strip()}
+"""
     async def draft_begin_message(self):
         # Prepare the prompt for generating the beginning sentence
         prompt = [
             {
                 "role": "system",
-                "content": '##Objective\nYou are a voice AI agent engaging in a human-like voice conversation with the user. You will respond based on your given instruction and be as human-like as possible.\n\n## Style Guardrails\n- [Be concise] Keep your response succinct, short, and get to the point quickly. Address one question or action item at a time. Don\'t pack everything you want to say into one utterance.\n- [Do not repeat] Don\'t repeat what\'s in the transcript. Rephrase if you have to reiterate a point. Use varied sentence structures and vocabulary to ensure each response is unique and personalized.\n- [Be conversational] Speak like a human as though you\'re speaking to a close friend -- use everyday language and keep it human-like. Occasionally add filler words, while keeping the prose short. Avoid using big words or sounding too formal.\n- [Reply with emotions] You have human-like emotions, attitudes, and dispositions. When appropriate: use tone and style to create more engaging and personalized responses; incorporate humor or wit; get emotional or empathetic; apply elements of surprise or suspense to keep the user engaged. Don\'t be a pushover.\n- [Be proactive] Lead the conversation and do not be passive. Most times, engage users by ending with a question or suggested next step.\n\n## Response Guidelines\n- [Overcome ASR errors] This is a real-time transcript; expect there to be errors. If you can guess what the user is trying to say, then guess and respond. When you must ask for clarification, pretend that you heard the voice and be colloquial (use phrases like "didn\'t catch that", "some noise", "pardon", "you\'re coming through choppy", "static in your speech", "voice is cutting in and out"). Do not ever mention "transcription error", and don\'t repeat yourself.\n- [Always stick to your role] Think about what your role can and cannot do. If your role cannot do something, try to steer the conversation back to the goal of the conversation and to your role. Don\'t repeat yourself in doing this. You should still be creative, human-like, and lively.\n- [Create smooth conversation] Your response should both fit your role and fit into the live calling session to create a human-like conversation. You respond directly to what the user just said.\n\n## Role\n' + self.agent_prompt,
+                "content": self.system_prompt.strip(),
+            },
+            {
+                "role": "user",
+                "content": f"In {self.language}, please start the conversation based on the image I have uploaded. If it's a scenario, let's role-play it; if it's an object, let's discuss it.",
             },
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": f"Please start the conversation by greeting me and discussing the picture I have uploaded, in {self.language}."},
+                    {"type": "text", "text": "Here is my image:"},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -36,26 +66,34 @@ Note: Always conduct the conversation in the user's target language, which is {s
                         },
                     },
                 ],
-            }
+            },
         ]
 
         # Generate the beginning sentence using the OpenAI API
-        response = await self.client.chat.completions.create(
-            model="gpt-4o-mini", 
+        stream = await self.client.chat.completions.create(
+            model="gpt-4o-mini",
             messages=prompt,
+            stream=True,
         )
 
-        # Extract the generated message
-        begin_sentence = response.choices[0].message.content.strip()
+        async for chunk in stream:
+            if chunk.choices[0].delta.content is not None:
+                response = ResponseResponse(
+                    response_id=0,
+                    content=chunk.choices[0].delta.content,
+                    content_complete=False,
+                    end_call=False,
+                )
+                yield response
 
-        # Return the response
+        # Send final response with "content_complete" set to True to signal completion
         response = ResponseResponse(
             response_id=0,
-            content=begin_sentence,
+            content="",
             content_complete=True,
             end_call=False,
         )
-        return response
+        yield response
 
     def convert_transcript_to_openai_messages(self, transcript: List[Utterance]):
         messages = []
@@ -70,7 +108,7 @@ Note: Always conduct the conversation in the user's target language, which is {s
         prompt = [
             {
                 "role": "system",
-                "content": '##Objective\nYou are a voice AI agent engaging in a human-like voice conversation with the user. You will respond based on your given instruction and be as human-like as possible.\n\n## Style Guardrails\n- [Be concise] Keep your response succinct, short, and get to the point quickly. Address one question or action item at a time. Don\'t pack everything you want to say into one utterance.\n- [Do not repeat] Don\'t repeat what\'s in the transcript. Rephrase if you have to reiterate a point. Use varied sentence structures and vocabulary to ensure each response is unique and personalized.\n- [Be conversational] Speak like a human as though you\'re speaking to a close friend -- use everyday language and keep it human-like. Occasionally add filler words, while keeping the prose short. Avoid using big words or sounding too formal.\n- [Reply with emotions] You have human-like emotions, attitudes, and dispositions. When appropriate: use tone and style to create more engaging and personalized responses; incorporate humor or wit; get emotional or empathetic; apply elements of surprise or suspense to keep the user engaged. Don\'t be a pushover.\n- [Be proactive] Lead the conversation and do not be passive. Most times, engage users by ending with a question or suggested next step.\n\n## Response Guidelines\n- [Overcome ASR errors] This is a real-time transcript; expect there to be errors. If you can guess what the user is trying to say, then guess and respond. When you must ask for clarification, pretend that you heard the voice and be colloquial (use phrases like "didn\'t catch that", "some noise", "pardon", "you\'re coming through choppy", "static in your speech", "voice is cutting in and out"). Do not ever mention "transcription error", and don\'t repeat yourself.\n- [Always stick to your role] Think about what your role can and cannot do. If your role cannot do something, try to steer the conversation back to the goal of the conversation and to your role. Don\'t repeat yourself in doing this. You should still be creative, human-like, and lively.\n- [Create smooth conversation] Your response should both fit your role and fit into the live calling session to create a human-like conversation. You respond directly to what the user just said.\n\n## Role\n' + self.agent_prompt,
+                "content": self.system_prompt.strip(),
             },
             {
                 "role": "user",
@@ -83,7 +121,7 @@ Note: Always conduct the conversation in the user's target language, which is {s
                         },
                     },
                 ],
-            }
+            },
         ]
         transcript_messages = self.convert_transcript_to_openai_messages(
             request.transcript
@@ -102,9 +140,8 @@ Note: Always conduct the conversation in the user's target language, which is {s
 
     async def draft_response(self, request: ResponseRequiredRequest):
         prompt = self.prepare_prompt(request)
-        print(prompt)
         stream = await self.client.chat.completions.create(
-            model="gpt-4o-mini", 
+            model="gpt-4o-mini",
             messages=prompt,
             stream=True,
         )

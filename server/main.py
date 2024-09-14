@@ -61,8 +61,6 @@ retell = Retell(api_key=os.getenv("RETELL_API_KEY"))
 
 analyzer = ConvoAnalysis()
 
-# call_20dea7d7b87dac64ce8ce3e61a1
-
 @app.websocket("/llm-websocket/{call_id}")
 async def websocket_handler(websocket: WebSocket, call_id: str):
     try:
@@ -101,8 +99,8 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
                 image_base64 = user_data.get("latestUploadedImage", DEFAULT_IMAGE)
                 llm_client = LlmClient(language=language, image_base64=image_base64)
                 # Send first message to signal ready of server
-                first_event = await llm_client.draft_begin_message()
-                await websocket.send_json(first_event.__dict__)
+                async for event in llm_client.draft_begin_message():
+                    await websocket.send_json(event.__dict__)
                 return
             if request_json["interaction_type"] == "ping_pong":
                 await websocket.send_json(
