@@ -107,7 +107,7 @@ export default function UploadPage() {
                         "hover:before:opacity-100"
                     )}
                 >
-                    <div className="relative z-10 bg-white rounded-xl p-6 flex flex-col items-center">
+                    <div className="relative z-10 bg-white rounded-xl p-6 flex flex-col items-center shadow-lg">
                         <div className="relative w-40 h-40 mb-4">
                             <Image
                                 src="/assets/icon-dark.png"
