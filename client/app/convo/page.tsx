@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import Image from "next/image";
-import { ArrowLeft, Mic, Home, Camera, User } from 'lucide-react';
+import { ArrowLeft, Mic} from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 export default function UploadPage() {
@@ -50,7 +49,7 @@ export default function UploadPage() {
                 <h1 className="flex-grow text-center ml-4 text-lg font-semibold text-[#385664]">Working with Linguify</h1>
             </header>
 
-            
+
             <div className="flex justify-center mt-8 mb-10">
                 <button className="bg-gray-600 text-white rounded-full p-6">
                     <Mic className="w-8 h-8" />
