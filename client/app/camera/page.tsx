@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+    return twMerge(clsx(inputs));
 }
 
 export default function UploadPage() {
@@ -26,52 +26,52 @@ export default function UploadPage() {
     const [language, setLanguage] = useState<{ code: string; label: string } | null>(null);
     const { userId } = useAuth();
 
-  const convertBlobToBase64 = async (blob: any) => {
+const convertBlobToBase64 = async (blob: any) => {
     return await blobToBase64(blob);
-  };
+};
 
-  const blobToBase64 = (blob: any) =>
+const blobToBase64 = (blob: any) =>
     new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+});
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (selectedFile) {
-      setFile(selectedFile);
+        setFile(selectedFile);
 
-        // Create a preview URL for the uploaded image
-        const imageUrl = URL.createObjectURL(selectedFile);
-        setImagePreviewUrl(imageUrl);
+            // Create a preview URL for the uploaded image
+            const imageUrl = URL.createObjectURL(selectedFile);
+            setImagePreviewUrl(imageUrl);
 
-      const b64 = await convertBlobToBase64(selectedFile);
-      localStorage.setItem("latestUploadedImage", b64);
-      await fetch("/api/image", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: userId,
-          imageb64: b64,
-        }),
-      });
+        const b64 = await convertBlobToBase64(selectedFile);
+        localStorage.setItem("latestUploadedImage", b64);
+        await fetch("/api/image", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+            id: userId,
+            imageb64: b64,
+            }),
+        });
 
-      console.log("File uploaded:", selectedFile.name);
-    }
-  };
+        console.log("File uploaded:", selectedFile.name);
+        }
+    };
 
-  const handleNavigation = (route: string) => {
-    router.push(route);
-  };
+    const handleNavigation = (route: string) => {
+        router.push(route);
+    };
 
-  const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLanguage(e.target.value);
-    // You can update the app's language setting here if needed
-  };
+    const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setLanguage(e.target.value);
+        // You can update the app's language setting here if needed
+    };
 
     const handleStartCall = async () => {
         if (!language) {
@@ -100,20 +100,20 @@ export default function UploadPage() {
         { code: "vi-VN", label: "Tiếng Việt" },
     ];
 
-  return (
-    <div
-      className="h-screen w-full flex flex-col bg-cover bg-center pt-8"
-      style={{ backgroundImage: `url('/assets/bgc.png')` }}
-    >
-      <header className="flex flex-col items-center justify-between p-4 relative">
-        <div className="flex items-center justify-between w-full">
-          <ArrowLeft
-            className="w-6 h-6 text-[#385664] cursor-pointer"
-            onClick={() => handleNavigation("/dashboard")}
-          />
-          <h1 className="text-center text-lg font-semibold text-[#385664] flex-grow">
-            Linguify your conversation
-          </h1>
+    return (
+        <div
+        className="h-screen w-full flex flex-col bg-cover bg-center pt-8"
+        style={{ backgroundImage: `url('/assets/bgc.png')` }}
+        >
+        <header className="flex flex-col items-center justify-between p-4 relative">
+            <div className="flex items-center justify-between w-full">
+            <ArrowLeft
+                className="w-6 h-6 text-[#385664] cursor-pointer"
+                onClick={() => handleNavigation("/dashboard")}
+            />
+            <h1 className="text-center text-lg font-semibold text-[#385664] flex-grow">
+                Linguify your conversation
+            </h1>
         </div>
 
         <div className="flex items-center mt-2">
@@ -138,7 +138,7 @@ export default function UploadPage() {
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
-      </header>
+    </header>
 
         <main className="flex-grow flex flex-col items-center justify-center px-4 space-y-6">
             <label
@@ -189,28 +189,28 @@ export default function UploadPage() {
         </label>
 
         <input
-          type="file"
-          id="file-upload"
-          className="hidden"
-          onChange={handleFileChange}
-          accept="image/*"
+            type="file"
+            id="file-upload"
+            className="hidden"
+            onChange={handleFileChange}
+            accept="image/*"
         />
 
         {file ? (
-          <button
+        <button
             onClick={handleStartCall}
             className="bg-[#AADF69] text-white px-14 py-3 rounded-full text-lg font-semibold hover:bg-green-500 transition-colors cursor-pointer"
-          >
+        >
             Start call »
-          </button>
+        </button>
         ) : (
-          <p className="text-[#385664]">Upload a file to start the call</p>
+        <p className="text-[#385664]">Upload a file to start the call</p>
         )}
 
         {file && (
-          <p className="text-[#3F3F44] mt-2">File: {file.name} uploaded!</p>
+        <p className="text-[#3F3F44] mt-2">File: {file.name} uploaded!</p>
         )}
-      </main>
+        </main>
 
         <nav className="bg-[#385664] text-[#F5F5F5] shadow-lg my-3 mx-10 py-4 flex justify-around items-center rounded-full">
             <Home
