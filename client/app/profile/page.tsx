@@ -1,84 +1,146 @@
 "use client";
 
-import { ArrowLeft } from 'lucide-react'
-import { Progress, ChakraProvider } from "@chakra-ui/react"
-import { useUser } from "@clerk/nextjs"
-import { useRouter } from 'next/navigation'
+import { ArrowLeft, TrendingUp } from 'lucide-react';
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from 'next/navigation';
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer, Tooltip } from "recharts";
+
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import {
+    ChartConfig,
+    ChartContainer,
+    ChartTooltip,
+    ChartTooltipContent,
+} from "@/components/ui/chart";
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation"; // Add Aceternity's gradient animation
+
+const chartData = [
+    { skill: "Grammar", value: 80 },
+    { skill: "Listening", value: 70 },
+    { skill: "Speaking", value: 60 },
+    { skill: "Vocabulary", value: 75 },
+    { skill: "Pronunciation", value: 65 },
+];
+
+const chartConfig = {
+    value: {
+        label: "Skill Level",
+        color: "hsl(var(--chart-1))",
+    },
+} satisfies ChartConfig;
 
 export default function ProfilePage() {
-    const { user } = useUser()
-    const router = useRouter()
+    const { user } = useUser();
+    const router = useRouter();
 
     const handleNavigation = (route: string) => {
-        router.push(route)
-    }
+        router.push(route);
+    };
 
     return (
-        <ChakraProvider>
-        <div className="min-h-screen bg-gray-100 p-4">
-        <header className="flex items-center p-4 relative">
-                <ArrowLeft 
-                    className="absolute left-4 w-6 h-6 text-[#385664] cursor-pointer" 
-                    onClick={() => handleNavigation('/dashboard')}
-                />
-                <h1 className="flex-grow text-center ml-4 text-lg font-semibold text-[#385664]">Profile</h1>
-            </header>
+        <BackgroundGradientAnimation className="min-h-screen relative">
+            <div className="relative z-10">
+                <div className="pt-8 p-4">
+                    <header className="flex items-center p-4 relative">
+                        <ArrowLeft 
+                            className="absolute left-4 w-6 h-6 text-[#385664] cursor-pointer" 
+                            onClick={() => handleNavigation('/dashboard')}
+                        />
+                        <h1 className="flex-grow text-center ml-4 text-lg font-semibold text-[#385664]">
+                            Profile
+                        </h1>
+                    </header>
 
-        <main className="flex flex-col items-center">
-            <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center mb-4">
-            {user?.imageUrl ? (
-                <img src={user.imageUrl} alt="Profile" className="w-full h-full rounded-full object-cover" />
-            ) : (
-                <svg className="w-16 h-16 text-gray-600" viewBox="0 0 100 100" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M50 95C74.8528 95 95 74.8528 95 50C95 25.1472 74.8528 5 50 5C25.1472 5 5 25.1472 5 50C5 74.8528 25.1472 95 50 95Z" />
-                <path d="M65 45C65 45 60 40 50 40C40 40 35 45 35 45" stroke="white" strokeWidth="4" strokeLinecap="round" />
-                <circle cx="35" cy="30" r="5" fill="white" />
-                <circle cx="65" cy="30" r="5" fill="white" />
-                <path d="M40 60C40 60 45 70 50 70C55 70 60 60 60 60" stroke="white" strokeWidth="4" strokeLinecap="round" />
-                </svg>
-            )}
-            </div>
+                    <main className="flex flex-col items-center">
+                        <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center mb-4">
+                            {user?.imageUrl ? (
+                                <img 
+                                    src={user.imageUrl} 
+                                    alt="Profile" 
+                                    className="w-full h-full rounded-full object-cover" 
+                                />
+                            ) : (
+                                <img 
+                                    src="/assets/icon-dark.png" 
+                                    alt="Profile" 
+                                    className="w-full h-full rounded-full object-cover" 
+                                />
+                            )}
+                        </div>
 
-            <h2 className="text-2xl font-bold mb-1">{user?.fullName || 'Name'}</h2>
-            <p className="text-sm text-gray-600 mb-6">joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'date'}</p>
+                        <h2 className="text-2xl font-bold mb-1">{user?.fullName || 'Name'}</h2>
+                        <p className="text-sm text-gray-600 mb-6">
+                            joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'date'}
+                        </p>
 
-            <div className="w-full max-w-md space-y-4 mb-6">
-            <h3 className="text-lg font-semibold mb-2">Language Progress</h3>
-            <div>
-                <div className="flex justify-between mb-1">
-                <span className="text-sm font-medium">Language #1</span>
-                <span className="text-sm font-medium">75%</span>
+                        <Card className="w-full max-w-md mb-6">
+                            <CardHeader>
+                                <CardTitle>Language Progress</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="mb-4">
+                                    <div className="flex justify-between mb-1">
+                                        <span className="text-sm font-medium">Language #1</span>
+                                        <span className="text-sm font-medium">75%</span>
+                                    </div>
+                                    <Progress value={75} className="h-2 bg-[#AADF69]/20" indicatorClassName="bg-[#AADF69]" />
+                                </div>
+                                <div>
+                                    <div className="flex justify-between mb-1">
+                                        <span className="text-sm font-medium">Language #2</span>
+                                        <span className="text-sm font-medium">50%</span>
+                                    </div>
+                                    <Progress value={50} className="h-2 bg-[#AADF69]/20" indicatorClassName="bg-[#AADF69]" />
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="w-full max-w-md">
+                            <CardHeader>
+                                <CardTitle>Overall Statistics</CardTitle>
+                                <CardDescription>Your language skills breakdown</CardDescription>
+                            </CardHeader>
+                            <CardContent className="pb-0">
+                                <ChartContainer
+                                    config={chartConfig}
+                                    className="mx-auto aspect-square max-h-[250px]"
+                                >
+                                    <RadarChart data={chartData}>
+                                        <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                        <PolarAngleAxis dataKey="skill" />
+                                        <PolarGrid />
+                                        <Radar
+                                            dataKey="value"
+                                            fill="#AADF69"
+                                            fillOpacity={0.6}
+                                            dot={{
+                                                r: 4,
+                                                fillOpacity: 1,
+                                            }}
+                                        />
+                                    </RadarChart>
+                                </ChartContainer>
+                            </CardContent>
+                            <CardFooter className="flex-col gap-2 text-sm">
+                                <div className="flex items-center gap-2 font-medium leading-none">
+                                    Improving by 5.2% this month <TrendingUp className="h-4 w-4" />
+                                </div>
+                                <div className="flex items-center gap-2 leading-none text-muted-foreground">
+                                    Based on your recent activities
+                                </div>
+                            </CardFooter>
+                        </Card>
+                    </main>
                 </div>
-                <Progress value={75} size="sm" colorScheme="blue" />
             </div>
-            <div>
-                <div className="flex justify-between mb-1">
-                <span className="text-sm font-medium">Language #2</span>
-                <span className="text-sm font-medium">50%</span>
-                </div>
-                <Progress value={50} size="sm" colorScheme="green" />
-            </div>
-            </div>
-
-            <div className="w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-2">Overall Statistic</h3>
-            <div className="bg-gray-700 p-4 rounded-lg">
-                <svg viewBox="0 0 200 200" className="w-full h-auto">
-                <polygon points="100,10 190,80 160,190 40,190 10,80" fill="none" stroke="white" strokeWidth="0.5" />
-                <polygon points="100,40 160,80 140,150 60,150 40,80" fill="none" stroke="white" strokeWidth="0.5" />
-                <polygon points="100,70 130,90 120,130 80,130 70,90" fill="none" stroke="white" strokeWidth="0.5" />
-                <polygon points="100,100 100,10 190,80 100,100 160,190 100,100 40,190 100,100 10,80" fill="none" stroke="white" strokeWidth="0.5" />
-                <polygon points="100,10 145,60 160,120 120,170 80,170 40,120 55,60" fill="#3B82F6" fillOpacity="0.6" />
-                <text x="100" y="5" textAnchor="middle" fill="white" fontSize="8">Grammar</text>
-                <text x="195" y="85" textAnchor="start" fill="white" fontSize="8">Listening</text>
-                <text x="165" y="195" textAnchor="middle" fill="white" fontSize="8">Speaking</text>
-                <text x="35" y="195" textAnchor="middle" fill="white" fontSize="8">Vocabulary</text>
-                <text x="5" y="85" textAnchor="end" fill="white" fontSize="8">Pronunciation</text>
-                </svg>
-            </div>
-            </div>
-        </main>
-        </div>
-        </ChakraProvider>
-    )
+        </BackgroundGradientAnimation>
+    );
 }
