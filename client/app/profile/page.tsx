@@ -60,7 +60,7 @@ export default function ProfilePage() {
                     </header>
 
                     <main className="flex flex-col items-center">
-                        <div className="w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center mb-4">
+                        <div className="w-24 h-24 rounded-full bg-[#385664] flex items-center justify-center mb-4">
                             {user?.imageUrl ? (
                                 <img 
                                     src={user.imageUrl} 
@@ -76,25 +76,25 @@ export default function ProfilePage() {
                             )}
                         </div>
 
-                        <h2 className="text-2xl font-bold mb-1">{user?.fullName || 'Name'}</h2>
+                        <h2 className="text-2xl font-bold mb-1 text-[#385664]">{user?.fullName || 'Name'}</h2>
                         <p className="text-sm text-gray-600 mb-6">
                             joined {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'date'}
                         </p>
 
-                        <Card className="w-full max-w-md mb-6">
+                        <Card className="w-full max-w-md mb-6 text-[#385664] border-[#385664]">
                             <CardHeader>
                                 <CardTitle>Language Progress</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="mb-4">
-                                    <div className="flex justify-between mb-1">
+                                    <div className="flex justify-between mb-1 text-[#385664]">
                                         <span className="text-sm font-medium">Language #1</span>
-                                        <span className="text-sm font-medium">75%</span>
+                                        <span className="text-sm font-medium ">75%</span>
                                     </div>
                                     <Progress value={75} className="h-2 bg-[#AADF69]/20" indicatorClassName="bg-[#AADF69]" />
                                 </div>
                                 <div>
-                                    <div className="flex justify-between mb-1">
+                                    <div className="flex justify-between mb-1 text-[#385664]">
                                         <span className="text-sm font-medium">Language #2</span>
                                         <span className="text-sm font-medium">50%</span>
                                     </div>
@@ -103,7 +103,7 @@ export default function ProfilePage() {
                             </CardContent>
                         </Card>
 
-                        <Card className="w-full max-w-md">
+                        <Card className="w-full max-w-md text-[#385664] border-none">
                             <CardHeader>
                                 <CardTitle>Overall Statistics</CardTitle>
                                 <CardDescription>Your language skills breakdown</CardDescription>
@@ -111,7 +111,7 @@ export default function ProfilePage() {
                             <CardContent className="pb-0">
                                 <ChartContainer
                                     config={chartConfig}
-                                    className="mx-auto aspect-square max-h-[250px]"
+                                    className="mx-auto aspect-square max-h-[225px] w-full"
                                 >
                                     <RadarChart data={chartData}>
                                         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
