@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@shadcn/ui": "^0.0.4",
+    "react-country-flag": "^3.1.0",
+    "react-world-flags": "^1.6.0"
+  }
+}
