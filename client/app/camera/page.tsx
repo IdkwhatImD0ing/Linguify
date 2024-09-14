@@ -3,7 +3,7 @@
 import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { useState } from 'react';
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { ArrowLeft, Home, Camera, User, Globe } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 import { database } from '@/lib/firebase/config'
