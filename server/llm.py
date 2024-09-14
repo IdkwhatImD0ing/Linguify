@@ -26,7 +26,7 @@ Note: Always conduct the conversation in the user's target language, which is {l
             content=self.begin_sentence,
             content_complete=True,
             end_call=False,
-        )
+        ) 
         return response
 
     def convert_transcript_to_openai_messages(self, transcript: List[Utterance]):

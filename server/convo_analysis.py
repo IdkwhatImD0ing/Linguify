@@ -1,16 +1,19 @@
-from openai import AsyncOpenAI
+import openai
 import requests
 import os
 
+from dotenv import load_dotenv
 class ConvoAnalysis:
 
     def get_conversation(self, conversation_id):
+      
+        load_dotenv(override=True)
         """
         Fetch conversation data from Retell AI API.
         """
-        url = f"https://retell.ai/api/v1/conversations/{conversation_id}"
+        url = f"https://api.retellai.com/v2/get-call/{conversation_id}"
         headers = {
-            "Authorization": f"Bearer {os.environ['RETELL_API_KEY']}"
+            "Authorization": f"Bearer {os.getenv('RETELL_API_KEY')}"
         }
         response = requests.get(url, headers=headers)
         if response.status_code == 200:
@@ -22,31 +25,42 @@ class ConvoAnalysis:
         """
         Analyze the user's proficiency in the conversation using GPT-4 API.
         """
-        prompt = f"""
-        Analyze the following conversation and provide a detailed feedback on the user's proficiency:
-        1. Grammar
-        2. Fluency
-        3. Vocabulary
-        4. Coherence
-        5. Engagement level
-        6. Pronounciation
-        Provide scores (out of 10) for each category, and offer suggestions for improvement.
+        messages = [
+            {
+                "role": "system",
+                "content": (
+                    "You are an assistant that analyzes the proficiency of a user's conversation. "
+                    "Provide detailed feedback on the following aspects: grammar, fluency, vocabulary, "
+                    "coherence, engagement level, and pronunciation. For each category, give a score out of 10 "
+                    "and offer suggestions for improvement."
+                )
+            },
+            {
+                "role": "user",
+                "content": f"Analyze the proficiency of the following conversation:\n\n{conversation_text}"
+            }
+        ]
 
-        Conversation: {conversation_text}
-        """
-
-        response = self.llm.Completion.create(
-            engine="gpt-4o-mini",
-            prompt=prompt,
-            max_tokens=500
-        )
-
-        return response.choices[0].text.strip()
+        try:
+            response = openai.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=messages,
+                max_tokens=800,
+                temperature=0.7  # Adjust as needed for creativity
+            )
+            # Extract and return the content from the response
+            return response.choices[0].message.content
+        except Exception as e:
+            raise Exception(f"OpenAI API error: {e}")
 
     def evaluate_conversation(self, conversation_id):
         """
         Fetch the conversation and evaluate the user's proficiency.
         """
         conversation_text = self.get_conversation(conversation_id)
+        
+        if not conversation_text:
+            raise ValueError("Conversation text is empty or not found.")
+        
         feedback = self.analyze_proficiency(conversation_text)
         return feedback
