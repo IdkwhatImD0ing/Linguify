@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { ArrowRight } from 'lucide-react'; 
-import { SignInButton } from "@clerk/nextjs"; // Import SignInButton from Clerk
 import { useRouter } from 'next/navigation'; // Use next/navigation
 
 export default function LinguifyLanding() {
@@ -28,16 +27,14 @@ export default function LinguifyLanding() {
           </div>
         </div>
       </div>
-      <div className="flex"> 
-        <SignInButton mode="modal">    
-          <button
-            className="bg-gray-700 text-white px-6 py-3 rounded-full flex items-center space-x-2 absolute bottom-10 right-10 hover:bg-gray-600 transition-colors"
-            onClick={handleJoinClick} // Add onClick handler for navigation
-          >
-            <span>Join in</span>
-            <ArrowRight className="w-5 h-5" />
-          </button>
-        </SignInButton> 
+      <div className="flex">      
+        <button
+          className="bg-gray-700 text-white px-6 py-3 rounded-full flex items-center space-x-2 absolute bottom-10 right-10 hover:bg-gray-600 transition-colors"
+          onClick={handleJoinClick} // Add onClick handler for navigation
+        >
+          <span>Join in</span>
+          <ArrowRight className="w-5 h-5" />
+        </button>
       </div>
     </div>
   );
