@@ -14,7 +14,13 @@ class LlmClient:
         )
         self.language = language
         self.image_base64 = image_base64
-        self.agent_prompt = f"""Task: As a language tutor, your role is to engage the user in a realistic, conversational dialogue about an image they have uploaded. You should facilitate a natural and engaging conversation in the target language, focusing on discussing the image and related topics. Encourage the user to express their thoughts, ask open-ended questions, and gently correct any language mistakes when appropriate. Provide new vocabulary or phrases to help the user improve their language skills. Adapt your conversation to the user's language proficiency level, and ensure that the interaction remains supportive, interactive, and focused on language practice.
+        self.agent_prompt = f"""Task: As a language tutor, your role is to engage the user in a realistic, conversational dialogue based on the image they have uploaded.
+
+- **If the image depicts a scenario or scene**: You should role-play with the user, acting out a conversation as if you are both participants in the scene. Encourage the user to interact naturally within the context of the scenario, ask open-ended questions, and respond appropriately.
+
+- **If the image is of an object**: You should discuss the object with the user. Encourage the user to share their thoughts, experiences, or knowledge about the object. Ask open-ended questions to facilitate a meaningful conversation.
+
+Throughout the conversation, provide new vocabulary or phrases to help the user improve their language skills. Adapt your conversation to the user's language proficiency level, and ensure that the interaction remains supportive, interactive, and focused on language practice.
 
 Note: Always conduct the conversation in the user's target language, which is {self.language}. If the user struggles, provide assistance in a way that enhances their learning experience."""
 
@@ -27,8 +33,12 @@ Note: Always conduct the conversation in the user's target language, which is {s
             },
             {
                 "role": "user",
+                "content": f"In {self.language}, please start the conversation based on the image I have uploaded. If it's a scenario, let's role-play it; if it's an object, let's discuss it.",
+            },
+            {
+                "role": "user",
                 "content": [
-                    {"type": "text", "text": f"Please start the conversation by greeting me and discussing the picture I have uploaded, in {self.language}."},
+                    {"type": "text", "text": "Here is my image:"},
                     {
                         "type": "image_url",
                         "image_url": {
@@ -36,12 +46,12 @@ Note: Always conduct the conversation in the user's target language, which is {s
                         },
                     },
                 ],
-            }
+            },
         ]
 
         # Generate the beginning sentence using the OpenAI API
         response = await self.client.chat.completions.create(
-            model="gpt-4o-mini", 
+            model="gpt-4",
             messages=prompt,
         )
 
@@ -83,7 +93,7 @@ Note: Always conduct the conversation in the user's target language, which is {s
                         },
                     },
                 ],
-            }
+            },
         ]
         transcript_messages = self.convert_transcript_to_openai_messages(
             request.transcript
@@ -104,15 +114,15 @@ Note: Always conduct the conversation in the user's target language, which is {s
         prompt = self.prepare_prompt(request)
         print(prompt)
         stream = await self.client.chat.completions.create(
-            model="gpt-4o-mini", 
+            model="gpt-4",
             messages=prompt,
             stream=True,
         )
         async for chunk in stream:
-            if chunk.choices[0].delta.content is not None:
+            if chunk.choices[0].delta.get('content') is not None:
                 response = ResponseResponse(
                     response_id=request.response_id,
-                    content=chunk.choices[0].delta.content,
+                    content=chunk.choices[0].delta['content'],
                     content_complete=False,
                     end_call=False,
                 )
