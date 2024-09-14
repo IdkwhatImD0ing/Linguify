@@ -10,10 +10,30 @@ export default function UploadPage() {
     const pathname = usePathname();
     const [file, setFile] = useState<File | null>(null); 
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const convertBlobToBase64 = async (blob: any) => {
+      return await blobToBase64(blob);
+    }
+    
+    const blobToBase64 = (blob: any) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+    
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        
         const selectedFile = e.target.files?.[0];
         if (selectedFile) {
-            setFile(selectedFile);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              setFile(selectedFile);
+            }
+
+            const b64 = await convertBlobToBase64(selectedFile);
+            console.log(b64);
+
             console.log("File uploaded:", selectedFile.name);
         }
     };
