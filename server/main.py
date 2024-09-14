@@ -3,6 +3,7 @@ import os
 import asyncio
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 from concurrent.futures import TimeoutError as ConnectionTimeoutError
 from retell import Retell
@@ -26,7 +27,23 @@ DEFAULT_LANGUAGE = "English"
 
 
 load_dotenv(override=True)
+
+origins = [
+    "http://localhost:3000",  # Your React frontend
+    # Add other origins if needed
+    # "https://yourdomain.com",
+]
+
+
 app = FastAPI()
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,          # Allow these origins
+    allow_credentials=True,         # Allow cookies, authorization headers, etc.
+    allow_methods=["*"],            # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],            # Allow all headers
+)
 retell = Retell(api_key=os.getenv("RETELL_API_KEY"))
 
 analyzer = ConvoAnalysis()

@@ -85,9 +85,12 @@ const Conversation = () => {
             // Handle metadata if needed
         });
 
-        retellWebClient.on("call_ended", (e) => {
+        retellWebClient.on("call_ended", async (e) => {
           console.log("Call has ended. Logging call id: ")
           console.log(callId.current);
+          const convoFeedback = await getFeedback(callId.current);
+          console.log(convoFeedback)
+          // setFeedback(convoFeedback)
         })
 
         retellWebClient.on("error", (error) => {
@@ -162,6 +165,22 @@ const Conversation = () => {
             throw new Error("Failed to register call");
         }
     }
+
+    async function getFeedback(callId: string): Promise<any> {
+      try {
+          const response = await fetch("http://localhost:8000/feedback/" + callId);
+
+          if (!response.ok) {
+              throw new Error(`Error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          return data;
+      } catch (err) {
+          console.error("Error getting call data:", err);
+          throw new Error("Failed to get call data");
+      }
+  }
 
     return (
         <div className="conversation-container" style={styles.container}>
