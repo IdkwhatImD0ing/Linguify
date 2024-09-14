@@ -5,6 +5,7 @@ import { WebhookEvent } from '@clerk/nextjs/server'
 import { database } from '@/lib/firebase/config'
 import { set, ref, push } from "firebase/database";
 import { NextResponse } from 'next/server'
+import { User } from '@/types/api';
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -55,16 +56,20 @@ export async function POST(req: Request) {
   const eventType = evt.type
   if (eventType === "user.created") {
     try {
-      const usersRef = ref(database, "users");
+      const usersRef = ref(database, `users`);
       const newUserRef = push(usersRef); // Generates a unique ID for the new user
 
-      console.log(usersRef)
-
-      set(newUserRef, {
+      const userData: User = {
+        id: evt.data.id,
         email: evt.data.email_addresses[0].email_address,
-        firstname: evt.data.first_name,
-        lastname: evt.data.last_name
-      });
+        firstname: evt.data.first_name as string,
+        lastname: evt.data.last_name as string,
+        currentStreak: 0,
+        highestStreak: 0,
+        interactions: []
+      }
+
+      set(newUserRef, userData);
       return NextResponse.json({
         userId: newUserRef.key,
         message: "Successfully Added User to firebase",

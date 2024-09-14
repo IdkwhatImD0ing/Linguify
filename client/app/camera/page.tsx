@@ -6,6 +6,9 @@ import { useState } from 'react';
 import Image from "next/image";
 import { ArrowLeft, Home, Camera, User, Globe } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
+import { database } from '@/lib/firebase/config'
+import { set, ref, push, query, orderByChild, equalTo, get } from "firebase/database";
+import { useAuth } from "@clerk/nextjs";
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -16,6 +19,7 @@ export default function UploadPage() {
     const pathname = usePathname();
     const [file, setFile] = useState<File | null>(null);
     const [language, setLanguage] = useState('en');
+    const { userId } = useAuth();
 
     const convertBlobToBase64 = async (blob: any) => {
         return await blobToBase64(blob);
@@ -34,6 +38,13 @@ export default function UploadPage() {
             setFile(selectedFile);
             const b64 = await convertBlobToBase64(selectedFile);
             console.log(b64);
+            const usersRef = ref(database, "users");
+            const usersQuery = query(usersRef, orderByChild("id"), equalTo(userId as string));
+            const snapshot = await get(usersQuery);
+              
+            if(snapshot.exists()) console.log(snapshot.val())
+
+
             console.log("File uploaded:", selectedFile.name);
         }
     };
@@ -57,10 +68,13 @@ export default function UploadPage() {
     return (
         <div className="h-screen w-full flex flex-col bg-cover bg-center pt-8"
             style={{ backgroundImage: `url('/assets/bgc.png')` }}>
-            <header className="flex items-center justify-between p-4 relative">
-                <ArrowLeft className="w-6 h-6 text-[#385664] cursor-pointer" onClick={() => handleNavigation('/dashboard')}/>
-                <h1 className="text-center text-lg font-semibold text-[#385664]">Linguify your conversation</h1>
-                <div className="flex items-center">
+            <header className="flex flex-col items-center justify-between p-4 relative">
+                <div className="flex items-center justify-between w-full">
+                    <ArrowLeft className="w-6 h-6 text-[#385664] cursor-pointer" onClick={() => handleNavigation('/dashboard')}/>
+                    <h1 className="text-center text-lg font-semibold text-[#385664] flex-grow">Linguify your conversation</h1>                
+                </div>
+                
+                <div className="flex items-center mt-2">
                     <Globe className="w-5 h-5 text-[#385664] mr-2" />
                     <select
                         value={language}

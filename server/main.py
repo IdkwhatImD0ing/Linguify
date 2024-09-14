@@ -3,11 +3,13 @@ import os
 import asyncio
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 from concurrent.futures import TimeoutError as ConnectionTimeoutError
 from retell import Retell
 from llm import LlmClient
 import base64
+from convo_analysis import ConvoAnalysis
 
 def convert_image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
@@ -15,7 +17,6 @@ def convert_image_to_base64(image_path):
 
 image_path = "ramen.jpeg"
 DEFAULT_IMAGE = convert_image_to_base64(image_path)
-
 
 from custom_types import (
     ConfigResponse,
@@ -26,8 +27,28 @@ DEFAULT_LANGUAGE = "English"
 
 
 load_dotenv(override=True)
+
+origins = [
+    "http://localhost:3000",  # Your React frontend
+    # Add other origins if needed
+    # "https://yourdomain.com",
+]
+
+
 app = FastAPI()
-retell = Retell(api_key=os.environ["RETELL_API_KEY"])
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,          # Allow these origins
+    allow_credentials=True,         # Allow cookies, authorization headers, etc.
+    allow_methods=["*"],            # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],            # Allow all headers
+)
+retell = Retell(api_key=os.getenv("RETELL_API_KEY"))
+
+analyzer = ConvoAnalysis()
+
+# call_20dea7d7b87dac64ce8ce3e61a1
 
 @app.websocket("/llm-websocket/{call_id}")
 async def websocket_handler(websocket: WebSocket, call_id: str):
@@ -107,3 +128,8 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
         await websocket.close(1011, "Server error")
     finally:
         print(f"LLM WebSocket connection closed for {call_id}") 
+
+@app.get("/feedback/{call_id}")
+async def feedback(call_id: str):
+    feedback = analyzer.evaluate_conversation(call_id)
+    return {"feedback": json.loads(feedback) }

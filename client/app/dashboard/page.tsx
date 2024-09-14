@@ -23,6 +23,8 @@ export default function Dashboard() {
         router.push(route); 
     };
 
+    const titles = ["Coffee Shop", "House hunting", "Eating out", "Shopping"];
+    
     return (
         <div className="h-screen w-full bg-[#E9E6E6] flex flex-col">
             <header className="flex justify-between items-center py-2 px-4">
@@ -52,16 +54,21 @@ export default function Dashboard() {
             </header>
 
             <main className="flex-grow px-4 space-y-4 overflow-hidden">
-                <h1 className="text-2xl font-bold text-gray-800">Ongoing Lessons</h1>
+                <div className="bg-[#F5F5F5] p-4 rounded-lg shadow-md"> 
+                    <h2 className="text-xl font-bold text-[#385664]">Daily Challenge 🏆</h2>
+                    <p className="text-gray-600 mb-2">Describe a picture to our AI!</p>
+                    <button className="bg-[#30B8FB] text-white flex justify-left items-center rounded-full w-18 h-7 px-3 py-3 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300">Start!</button>
+                </div>
+                <h1 className="text-2xl font-bold text-gray-800">Learning Journey</h1>
                 <div className="h-[calc(100vh-200px)] overflow-y-auto">
                     <div className="grid grid-cols-2 gap-4 pb-4">
-                    {[...Array(6)].map((_, index) => (
+                    {titles.map((title, index) => (
                         <div key={index} className="rounded-lg overflow-hidden shadow-lg">
-                            <div className="h-24 bg-[#AADF69]"></div>
+                            <div className="h-[8.5rem] bg-[#AADF69]"></div>
                             <div className="h-24 bg-[#F5F5F5] flex flex-col justify-between">
                                 <div>
-                                    <h4 className="text-sm font-semibold text-[#ADADAD] pt-2 px-2">English</h4>
-                                    <h2 className="font-bold text-2xl text-[#385664] px-2">Title</h2>
+                                    <p className="text-[14px] font-semibold text-[#ADADAD] pt-2 px-2">English</p>
+                                    <h2 className="font-bold text-xl text-[#385664] px-2">{title}</h2>
                                 </div>
                                 <div className="flex justify-center pb-2">
                                     <button className="bg-[#30B8FB] text-white flex justify-center items-center rounded-full w-32 h-7 px-3 py-2 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300">

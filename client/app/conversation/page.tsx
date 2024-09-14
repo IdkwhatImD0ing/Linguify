@@ -1,4 +1,5 @@
 "use client";
+import { Feedback } from "@/types/api";
 import React, { useEffect, useState, useRef } from "react";
 import { RetellWebClient } from "retell-client-js-sdk";
 
@@ -6,6 +7,7 @@ const agentId = "agent_3e6eb29bd647e7d27cde795417";
 
 interface RegisterCallResponse {
     access_token: string;
+    call_id: string;
 }
 
 const retellWebClient = new RetellWebClient();
@@ -14,7 +16,9 @@ const Conversation = () => {
     const [isCalling, setIsCalling] = useState(false);
     const [language, setLanguage] = useState("English");
     const [imageBase64, setImageBase64] = useState("");
-    const [fullTranscript, setFullTranscript] = useState<TranscriptMessage[]>([]);
+    const [fullTranscript, setFullTranscript] = useState<any>([]);
+    const callId = useRef("");
+    const [feedback, setFeedback] = useState<Feedback>();
 
     // Reference to the end of the transcript for auto-scrolling
     const transcriptEndRef = useRef<HTMLDivElement>(null);
@@ -44,7 +48,7 @@ const Conversation = () => {
         });
 
         retellWebClient.on("update", (update) => {
-            setFullTranscript((prevTranscript) => {
+            setFullTranscript((prevTranscript: any) => {
                 // Check if update.transcript has at least one message
                 if (update.transcript.length === 0) {
                     return prevTranscript;
@@ -77,10 +81,17 @@ const Conversation = () => {
         });
 
 
-
         retellWebClient.on("metadata", (metadata) => {
             // Handle metadata if needed
         });
+
+        retellWebClient.on("call_ended", async (e) => {
+          console.log("Call has ended. Logging call id: ")
+          console.log(callId.current);
+          const convoFeedback = await getFeedback(callId.current);
+          console.log(convoFeedback)
+          // setFeedback(convoFeedback)
+        })
 
         retellWebClient.on("error", (error) => {
             console.error("An error occurred:", error);
@@ -113,6 +124,10 @@ const Conversation = () => {
         } else {
             try {
                 const registerCallResponse = await registerCall(agentId);
+                
+                // setCallId(registerCallResponse.call_id);
+                callId.current = registerCallResponse.call_id
+                console.log(callId.current)
                 if (registerCallResponse.access_token) {
                     await retellWebClient.startCall({
                         accessToken: registerCallResponse.access_token,
@@ -150,6 +165,22 @@ const Conversation = () => {
             throw new Error("Failed to register call");
         }
     }
+
+    async function getFeedback(callId: string): Promise<any> {
+      try {
+          const response = await fetch("http://localhost:8000/feedback/" + callId);
+
+          if (!response.ok) {
+              throw new Error(`Error: ${response.status}`);
+          }
+
+          const data = await response.json();
+          return data;
+      } catch (err) {
+          console.error("Error getting call data:", err);
+          throw new Error("Failed to get call data");
+      }
+  }
 
     return (
         <div className="conversation-container" style={styles.container}>
