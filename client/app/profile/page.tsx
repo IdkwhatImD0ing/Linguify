@@ -110,7 +110,7 @@ export default function ProfilePage() {
                             </CardHeader>
                             <CardContent className="pb-0 mt-[-20px]">
                                 <ChartContainer
-                                    config={chartConfig}
+                                    // config={chartConfig}
                                     className="mx-auto aspect-square max-h-[225px] w-full"
                                 >
                                     <RadarChart data={chartData}>
