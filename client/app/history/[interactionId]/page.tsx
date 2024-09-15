@@ -18,6 +18,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import Image from 'next/image';
+import { Progress } from "@/components/ui/progress"
 
 export default function History({
   params,
@@ -102,7 +104,7 @@ export default function History({
 
             <CardContent className="space-y-6">
               {/* Radar Chart */}
-              <div className="bg-opacity-20 rounded-xl shadow-md width-full">
+              <div className="bg-opacity-20 rounded-xl shadow-md width-full items-center justify-center align-middle">
                 <ResponsiveContainer width="100%" height={300}>
                   <RadarChart data={chartData}>
                     <PolarGrid stroke="#F5F5F5" />
@@ -174,7 +176,22 @@ export default function History({
           </Card>
         </div>
       ) : (
-        <h1>Loading...</h1>
+        <div className="loading-screen flex items-center justify-center h-screen bg-[#f5f5f5]">
+        <div className="text-center">
+          <div className="relative w-24 h-24 mx-auto mb-4">
+            <Image
+              src="/assets/icon-dark.png"
+              alt="Linguify Logo"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+          <div className="w-48 mx-auto">
+            <Progress value={99} className="h-2" />
+          </div>
+          <p className="text-[#385664] font-semibold mt-2">Loading...</p>
+        </div>
+      </div>
       )}
     </>
     // <ActionReportComponent />
