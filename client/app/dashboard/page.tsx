@@ -43,7 +43,6 @@ export default function Dashboard() {
 
   return (
     <div className="h-screen w-full bg-[#E9E6E6] flex flex-col">
-
       <header className="flex justify-between items-center py-2 px-4">
         <div className="flex items-center space-x-2">
           <div className="relative w-12 h-12">
@@ -101,8 +100,13 @@ export default function Dashboard() {
                         </h2>
                       </div>
                       <div className="flex justify-center pb-2">
-                        <button className="bg-[#30B8FB] text-white flex justify-center items-center rounded-full w-32 h-7 px-3 py-2 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300">
-                          Enter
+                        <button
+                          className="bg-[#30B8FB] text-white flex justify-center items-center rounded-full w-32 h-7 px-3 py-2 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300"
+                          onClick={async () =>
+                            await router.push(`/history/${key}`)
+                          }
+                        >
+                          View
                         </button>
                       </div>
                     </div>
