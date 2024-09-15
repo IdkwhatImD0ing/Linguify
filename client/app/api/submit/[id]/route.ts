@@ -7,6 +7,8 @@ import { Interaction } from '@/types/api';
 
 require('dotenv').config()
 
+export const maxDuration = 60;
+
 
 export const feedbackSchema = z.object({
   grammarRating: z.number().int(),

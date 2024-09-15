@@ -7,7 +7,7 @@ import { UploadImagePayload, User } from '@/types/api'
 
 import { db } from '@/lib/firebase/admin'
 
-
+export const maxDuration = 60;
 
 export async function POST(req: Request) {
   // Get the body
