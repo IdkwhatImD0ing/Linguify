@@ -71,7 +71,7 @@ async function analyzeProficiency(conversationText: string): Promise<string> {
             "You are an assistant that analyzes the proficiency of a user's conversation. " +
             'Provide detailed feedback on the following aspects: grammar, fluency, vocabulary, ' +
             'coherence, and engagement level. For each category, give a score out of 10 ' +
-            'and offer suggestions for improvement. Additionally, generate a title of 1 to 3 words describing the image they submitted.',
+            'and offer suggestions for improvement. Additionally, generate a title of 1 to 2 words describing the image they submitted.',
         },
         {
           role: 'user',
@@ -115,14 +115,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       imageb64: imageb64,
       feedback: JSON.parse(result)
     })
-
-    // await userRef.update({
-    //   interactions: [...prevInteractions, {
-    //     callId: id,
-    //     imageb64: imageb64,
-    //     feedback: JSON.parse(result)
-    //   }]
-    // })
 
 
     return NextResponse.json(result, {
