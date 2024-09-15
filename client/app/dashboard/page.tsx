@@ -131,9 +131,11 @@ export default function Dashboard() {
                             {history[key]?.feedback.title}
                             </h2>
                         </div>
-                        <div className="flex justify-center pb-2">
+                        <div className="flex justify-center pb-2"
+                          onClick={async () => await router.push(`/history/${key}`)}
+                        >
                             <button className="bg-[#30B8FB] text-white flex justify-center items-center rounded-full w-32 h-7 px-3 py-2 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300">
-                            Enter
+                            View
                             </button>
                         </div>
                         </div>
