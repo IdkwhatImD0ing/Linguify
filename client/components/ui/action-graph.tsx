@@ -18,6 +18,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Feedback } from "@/types/api";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 interface SkillData {
   rating: string;
@@ -43,62 +44,34 @@ export const ActionReportComponent: React.FC<ActionReportProps> = ({
 
   const data = feedback ? JSON.parse(feedback) as Feedback : undefined;
 
-  console.log(data)
-
-
   let chartData = [
-    {
-      skill: "Grammar",
-      value: data?.grammarRating,
-      summary: data?.grammarSummary
-
-    },
-    {
-      skill: "Coherence",
-      value: data?.coherenceRating,
-      summary: data?.coherenceSummary
-    },
-    {
-      skill: "Fluency",
-      value: data?.fluencyRating,
-      summary: data?.fluencySummary
-
-    },
-    {
-      skill: "Vocabulary",
-      value: data?.vocabularyRating,
-      summary: data?.vocabularySummary
-    },
-    {
-      skill: "Engagement",
-      value: data?.engagementRating,
-      summary: data?.engagementSummary
-
-    },
+    { skill: "Grammar", value: data?.grammarRating, summary: data?.grammarSummary },
+    { skill: "Coherence", value: data?.coherenceRating, summary: data?.coherenceSummary },
+    { skill: "Fluency", value: data?.fluencyRating, summary: data?.fluencySummary },
+    { skill: "Vocabulary", value: data?.vocabularyRating, summary: data?.vocabularySummary },
+    { skill: "Engagement", value: data?.engagementRating, summary: data?.engagementSummary },
   ];
-
-  console.log(chartData);
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
+      className="min-h-screen bg-cover bg-center flex items-center justify-center"
       style={{ backgroundImage: `url('/assets/diamond.png')` }}
     >
-      <Card className="w-full max-w-m border-none">
-        <CardHeader className="flex flex-col items-center justify-between pb-4">
-          <CardTitle className="text-[#F5F5F5] text-xl w-full text-center">
+      <Card className="w-full max-w-4xl border-none">
+        <CardHeader className="flex flex-col items-center justify-between">
+          <CardTitle className="text-[#355361] text-md w-full text-center">
             Action Report
           </CardTitle>
           <Link href="/dashboard" className="absolute right-2 top-2">
             <Button variant="ghost" size="icon">
-              <X className="h-6 w-6 text-[#F5F5F5]" />
+              <X className="h-5 w-5 text-[#355361]" />
             </Button>
           </Link>
         </CardHeader>
 
         <CardContent className="space-y-6">
           {/* Radar Chart */}
-          <div className="bg-opacity-20 rounded-xl p-6 shadow-md">
+          <div className="bg-opacity-20 rounded-xl shadow-md width-full">
             <ResponsiveContainer width="100%" height={300}>
               <RadarChart data={chartData}>
                 <PolarGrid stroke="#F5F5F5" />
@@ -118,61 +91,60 @@ export const ActionReportComponent: React.FC<ActionReportProps> = ({
           </div>
 
           {/* Learn More Section */}
-          <div className="rounded-xl p-4">
+          <div className="rounded-xl">
             <h3 className="text-lg font-semibold text-[#F5F5F5] mb-4">
               Learn More
             </h3>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="text-center p-4 bg-[#355361] rounded-lg">
-                <p className="text-lg text-left font-semibold text-[#F5F5F5]">
-                  Ratings
-                </p>
-                <p className="text-4xl text-[#F5F5F5] font-bold">
-                  {/* {feedback[selectedSkill]?.rating || "-"}/10 */}
-                  {
-                    chartData.filter(
-                      (skill) => skill.skill === selectedSkill
-                    )[0].value
-                  }{" "}
-                  / 10
-                </p>
+            <div className="flex">
+              {/* Skills list on the left */}
+              <div className="w-1/3 bg-[#355361] rounded-lg overflow-hidden mr-4">
+                {chartData.map((skill, index) => (
+                  <div
+                    key={index}
+                    className={`text-center p-3 text-[#F5F5F5] cursor-pointer ${
+                      selectedSkill === skill.skill ? "bg-[#4a7285]" : ""
+                    }`}
+                    onClick={() => setSelectedSkill(skill.skill)}
+                  >
+                    {skill.skill}
+                  </div>
+                ))}
               </div>
-              <div className="text-center p-4 bg-[#355361] rounded-lg">
-                <p className="text-lg text-left font-semibold text-[#F5F5F5]">
-                  Summary
-                </p>
-                <p className="text-lg text-[#F5F5F5]">
-                  {/* {feedback[selectedSkill]?.summary || "-"} */}
-                  {
-                    chartData.filter(
-                      (skill) => skill.skill === selectedSkill
-                    )[0].summary
-                  }
-                  {/* Summary placeholder */}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 bg-[#355361] rounded-lg overflow-hidden">
-              {chartData.map((skill, index) => (
-                <div
-                  key={index}
-                  className={`text-center p-3 text-[#F5F5F5] cursor-pointer hover:bg-[#4a7285] ${
-                    selectedSkill === skill.skill ? "bg-[#4a7285]" : ""
-                  } ${
-                    skill.skill === selectedSkill
-                      ? "border-b border-[#4a7285]"
-                      : ""
-                  }`}
-                  onClick={() => setSelectedSkill(skill.skill)}
-                >
-                  {skill.skill}
+
+              {/* Rating and Summary on the right */}
+              <div className="w-2/3 flex flex-col gap-2">
+                <div className="text-center p-4 bg-[#355361] rounded-lg">
+                  <p className="text-md text-left font-semibold text-[#F5F5F5]">
+                    Ratings
+                  </p>
+                  <p className="text-sm text-[#F5F5F5] font">
+                    {chartData.find(skill => skill.skill === selectedSkill)?.value || "-"} / 10
+                  </p>
                 </div>
-              ))}
+                <div className="text-center p-4 bg-[#355361] rounded-lg flex-grow">
+                  <p className="text-lg text-left font-semibold text-[#F5F5F5]">
+                    Summary
+                  </p>
+                  <p className="text-xs text-[#F5F5F5] text-left">
+                    {chartData.find(skill => skill.skill === selectedSkill)?.summary || "-"}
+                  </p>
+                </div>
+              </div>
             </div>
 
-            <Button className="w-full border border-[#F5F5F5] bg-transparent text-white font-semibold rounded-md mt-5 hover:border-[#9bc960]">
-              View Placement Rank
-            </Button>
+            <HoverBorderGradient
+              containerClassName="mt-5 flex justify-center w-full"
+              className="w-full"
+              as="button"
+              from="#9bc960"
+              to="#F5F5F5"
+            >
+              <div className="w-full py-2 rounded-md flex items-center justify-center"> 
+                <span className="font-semibold text-white">
+                  View Placement Rank
+                </span>
+              </div>
+            </HoverBorderGradient>
           </div>
         </CardContent>
       </Card>

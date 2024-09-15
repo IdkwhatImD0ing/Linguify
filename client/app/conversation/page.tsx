@@ -8,6 +8,8 @@ import { useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 import ActionReportComponent from "@/components/ui/action-graph";
 import { useRouter } from "next/navigation";
+import { ChevronLeft, PhoneOff } from 'lucide-react';
+
 
 interface RegisterCallResponse {
   access_token: string;
@@ -208,136 +210,79 @@ const Conversation = () => {
 
   if (isLoading) {
     return (
-      <div className="loading-screen" style={styles.loadingScreen}>
+      <div className="loading-screen">
         <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="conversation-container" style={styles.container}>
+    <div className="flex flex-col h-screen bg-gray-100">
+      {/* Header */}
+      <header className= "p-4 flex items-center">
+        <button onClick={() => router.back()} className="mr-4">
+          <ChevronLeft className="w-6 h-6 text-gray-600" />
+        </button>
+        <h1 className="text-center text-lg font-semibold text-[#385664] flex-grow">Working with Linguify</h1>
+      </header>
+
+      {/* Image Preview */}
       {imagePreviewUrl && (
-        <div className="image-preview" style={styles.imagePreviewContainer}>
-          <img
-            src={imagePreviewUrl}
-            alt="Uploaded"
-            style={styles.imagePreview}
-          />
+        <div className="p-4">
+          <div className="relative w-auto h-40 rounded-xl overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#5C7939] to-[#A8C776] rounded-xl"></div>
+            <div className="absolute inset-[3px] rounded-lg overflow-hidden">
+              <img
+                src={imagePreviewUrl}
+                alt="Uploaded"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
         </div>
       )}
-      <main className="conversation-main" style={styles.main}>
-        <h2 style={styles.title}>Transcript</h2>
-        <div className="transcript" style={styles.transcript}>
-          {fullTranscript.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                ...styles.message,
-                ...(item.role === "agent"
-                  ? styles.agentMessage
-                  : styles.userMessage),
-                opacity: item.isComplete ? 1 : 0.6,
-              }}
-            >
-              <strong>{item.role === "agent" ? "Agent" : "You"}:</strong>{" "}
-              {item.content}
-            </div>
-          ))}
-          <div ref={transcriptEndRef} />
+
+      {/* Transcript */}
+      <main className="flex-1 px-4 py-2 overflow-y-auto space-y-2">
+        <div className="text-center font-bold text-gray-700">
+          <span>Transcript</span>
         </div>
+        {fullTranscript.map((item, index) => (
+          <div
+            key={index}
+            className={`flex ${item.role === "agent" ? "justify-start" : "justify-end"}`}
+          >
+            <div
+              className={`max-w-[70%] p-3 rounded-lg ${
+                item.role === "agent"
+                  ? "bg-gray-700 text-white"
+                  : "bg-[#30B8FB] text-white flex items-center space-x-2"
+              }`}
+            >
+              {item.role !== "agent" && (
+                <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                  <span className="text-[#30B8FB] text-xs">👤</span>
+                </div>
+              )}
+              <span>{item.content}</span>
+            </div>
+          </div>
+        ))}
+        <div ref={transcriptEndRef} />
       </main>
-      <div style={styles.endCallButtonContainer}>
-        <button onClick={endCall} style={styles.endCallButton}>
-          End Call
+
+      {/* End Call Button */}
+      <div className="p-4">
+        <button
+          onClick={endCall}
+          className="w-full bg-red-500 text-white py-3 rounded-lg flex items-center justify-center space-x-2 hover:bg-red-600"
+        >
+          <PhoneOff className="w-5 h-5" />
+          <span>End Call</span>
         </button>
       </div>
     </div>
   );
-};
-
-// Basic inline styles for demonstration purposes
-
-const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    height: "100vh",
-    fontFamily: "Arial, sans-serif",
-    backgroundColor: "#f0f0f0",
-  },
-  loadingScreen: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    fontSize: "24px",
-    backgroundColor: "#f0f0f0",
-  },
-  imagePreviewContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "10px",
-    backgroundColor: "#ffffff",
-    borderBottom: "1px solid #ccc",
-  },
-  imagePreview: {
-    maxWidth: "100%",
-    maxHeight: "200px",
-    objectFit: "contain",
-  },
-  main: {
-    flex: 1,
-    padding: "20px",
-    overflowY: "auto",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#333",
-  },
-  transcript: {
-    maxHeight: "80vh",
-    overflowY: "auto",
-    padding: "10px",
-    backgroundColor: "#ffffff",
-    borderRadius: "5px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-  },
-  message: {
-    marginBottom: "10px",
-    padding: "10px",
-    borderRadius: "5px",
-    maxWidth: "80%",
-    color: "#000",
-  },
-  agentMessage: {
-    backgroundColor: "#e1f5fe",
-    alignSelf: "flex-start",
-  },
-  userMessage: {
-    backgroundColor: "#c8e6c9",
-    alignSelf: "flex-end",
-    marginLeft: "auto",
-  },
-  endCallButtonContainer: {
-    position: "fixed",
-    bottom: 0,
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "#fff",
-    borderTop: "1px solid #ccc",
-  },
-  endCallButton: {
-    width: "100%",
-    padding: "15px",
-    fontSize: "18px",
-    cursor: "pointer",
-    borderRadius: "5px",
-    border: "none",
-    backgroundColor: "#ff4d4f",
-    color: "#fff",
-  },
 };
 
 export default Conversation;
