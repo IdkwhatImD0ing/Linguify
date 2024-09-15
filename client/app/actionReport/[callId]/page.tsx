@@ -18,7 +18,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { ActionReportComponent } from "@/components/ui/action-graph";
-import { PageProps } from "@/.next/types/app/layout";
 import { Feedback } from "@/types/api";
 
 async function getFeedback(callId: string): Promise<Feedback> {
