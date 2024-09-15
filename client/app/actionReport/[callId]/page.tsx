@@ -20,13 +20,15 @@ import {
 import { ActionReportComponent } from "@/components/ui/action-graph";
 import { Feedback } from "@/types/api";
 import { useAuth } from "@clerk/nextjs";
+import { useSearchParams } from "next/navigation";
 
-async function getFeedback(callId: string, userId: string): Promise<Feedback> {
+async function getFeedback(callId: string, userId: string, language: string): Promise<Feedback> {
   try {
     const response = await fetch("/api/submit/" + callId, {
       method: "POST",
       body: JSON.stringify({
         userId: userId,
+        language: language
       }),
     });
 
@@ -52,10 +54,14 @@ export default function ActionReport({
   const { callId } = params;
   const { userId } = useAuth();
   const [feedback, setFeedback] = useState<any>();
-  useEffect(() => {
+
+  const searchParams = useSearchParams();
+  const language = searchParams.get("locale");
+
+    useEffect(() => {
     const fetchData = async () => {
       try {
-        const feedback = await getFeedback(callId, userId as string);
+        const feedback = await getFeedback(callId, userId as string, language as string);
         setFeedback(feedback);
       } catch (e) {
         console.log(e);

@@ -98,6 +98,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     /* Getting body data */
     const body = await request.json();
     const userId = body.userId;
+    const language = body.language;
 
     /* Conversation analysis */
     const data = await getConversation(id)
@@ -112,7 +113,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     await interactionsRef.push({
       callId: id,
       imageb64: imageb64,
-      feedback: JSON.parse(result)
+      feedback: JSON.parse(result),
+      language: language
     })
 
 

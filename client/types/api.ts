@@ -37,6 +37,7 @@ export interface Interaction {
   callId: string;
   imageb64: string
   feedback: Feedback;
+  language: string;
 }
 
 enum LessonType {

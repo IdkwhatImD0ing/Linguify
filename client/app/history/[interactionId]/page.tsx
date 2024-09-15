@@ -89,9 +89,10 @@ export default function History({
         >
           <Card className="w-full max-w-4xl border-none">
             <CardHeader className="flex flex-col items-center justify-between">
-              <CardTitle className="text-[#355361] text-md w-full text-center">
+              <CardTitle className="text-[#355361] text-xl mb-4 w-full text-center">
                 {data.title}
               </CardTitle>
+              {/* <h1>{data.language}</h1> */}
               <Link href="/dashboard" className="absolute right-2 top-2">
                 <Button variant="ghost" size="icon">
                   <X className="h-5 w-5 text-[#355361]" />

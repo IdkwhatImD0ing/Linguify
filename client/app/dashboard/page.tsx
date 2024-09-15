@@ -93,7 +93,7 @@ export default function Dashboard() {
                     <div className="h-24 bg-[#F5F5F5] flex flex-col justify-between">
                       <div>
                         <p className="text-[14px] font-semibold text-[#ADADAD] pt-2 px-2">
-                          English
+                        {history[key]?.language}
                         </p>
                         <h2 className="font-bold text-lg text-[#385664] px-2">
                           {history[key]?.feedback.title}

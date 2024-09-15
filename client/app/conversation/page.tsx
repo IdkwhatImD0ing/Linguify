@@ -104,7 +104,7 @@ const Conversation = () => {
       console.log("Call has ended. Logging call id: ");
       console.log(callId.current);
       isCalling.current = false;
-      router.push(`/actionReport/${callId.current}`)
+      router.push(`/actionReport/${callId.current}?locale=${language}`)
       // const convoFeedback = await getFeedback(callId.current);
       // setFeedback(convoFeedback);
       setIsCallFinished(true);
@@ -184,23 +184,6 @@ const Conversation = () => {
     } catch (err) {
       console.error("Error registering call:", err);
       throw new Error("Failed to register call");
-    }
-  }
-
-  async function getFeedback(callId: string): Promise<any> {
-    try {
-      const response = await fetch("/api/submit/" + callId);
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log(data);
-      return data;
-    } catch (err) {
-      console.error("Error getting call data:", err);
-      throw new Error("Failed to get call data");
     }
   }
 
