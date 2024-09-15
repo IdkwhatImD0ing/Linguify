@@ -19,10 +19,16 @@ import {
 } from "recharts";
 import { ActionReportComponent } from "@/components/ui/action-graph";
 import { Feedback } from "@/types/api";
+import { useAuth } from "@clerk/nextjs";
 
-async function getFeedback(callId: string): Promise<Feedback> {
+async function getFeedback(callId: string, userId: string): Promise<Feedback> {
   try {
-    const response = await fetch("/api/feedback/" + callId);
+    const response = await fetch("/api/submit/" + callId, {
+      method: "POST",
+      body: JSON.stringify({
+        userId: userId,
+      }),
+    });
 
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
@@ -44,11 +50,12 @@ export default function ActionReport({
   };
 }) {
   const { callId } = params;
+  const { userId } = useAuth();
   const [feedback, setFeedback] = useState<any>();
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const feedback = await getFeedback(callId);
+        const feedback = await getFeedback(callId, userId as string);
         setFeedback(feedback);
       } catch (e) {
         console.log(e);

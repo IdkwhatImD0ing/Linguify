@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { zodResponseFormat } from "openai/helpers/zod";
 import { z } from "zod";
+import { db } from '@/lib/firebase/admin'
+import { Interaction } from '@/types/api';
+
 require('dotenv').config()
 
 
@@ -20,6 +23,8 @@ export const feedbackSchema = z.object({
 
   engagementRating: z.number().int(),
   engagementSummary: z.string(),
+
+  title: z.string()
 });
 /**
  * Fetch conversation data from Retell AI API.
@@ -66,7 +71,7 @@ async function analyzeProficiency(conversationText: string): Promise<string> {
             "You are an assistant that analyzes the proficiency of a user's conversation. " +
             'Provide detailed feedback on the following aspects: grammar, fluency, vocabulary, ' +
             'coherence, and engagement level. For each category, give a score out of 10 ' +
-            'and offer suggestions for improvement.',
+            'and offer suggestions for improvement. Additionally, generate a title of 1 to 3 words describing the image they submitted.',
         },
         {
           role: 'user',
@@ -85,13 +90,41 @@ async function analyzeProficiency(conversationText: string): Promise<string> {
 }
 
 
-// Handle POST request
-export async function GET(request: NextRequest,  { params }: { params: { id: string } }) {
+// Handle GET request
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   const { id } = params;
   try {
     // const data = await getConversation("call_044d239026aaa5304e2f24afda7")
+    /* Getting body data */
+    const body = await request.json();
+    const userId = body.userId;
+
+    /* Conversation analysis */
     const data = await getConversation(id)
     const result = await analyzeProficiency(JSON.stringify(data));
+
+    /* Firebase db */
+    const userRef = db.ref(`users/${userId}`);
+    const userVal = await userRef.get();
+    const imageb64 = userVal.val().latestUploadedImage;
+    const prevInteractions = userVal.val().interactions;
+
+    const interactionsRef = db.ref(`interaction/${userId}`)
+    await interactionsRef.push({
+      callId: id,
+      imageb64: imageb64,
+      feedback: JSON.parse(result)
+    })
+
+    // await userRef.update({
+    //   interactions: [...prevInteractions, {
+    //     callId: id,
+    //     imageb64: imageb64,
+    //     feedback: JSON.parse(result)
+    //   }]
+    // })
+
+
     return NextResponse.json(result, {
       status: 200,
     })
@@ -102,7 +135,7 @@ export async function GET(request: NextRequest,  { params }: { params: { id: str
 
     // Optionally, provide more detailed error messages
     const errorMessage =
-      e.response?.data?.error || 'Failed to create web call';
+      e.response?.data?.error || 'Failed to submit';
 
     return NextResponse.json(
       { error: errorMessage },

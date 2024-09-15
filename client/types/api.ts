@@ -16,6 +16,12 @@ export interface UploadImagePayload {
   imageb64: string;
 }
 
+export interface SubmitLessonPayload {
+  callId: string;
+  imageb64: string;
+
+}
+
 export interface User {
   uid: string;
   email: string;
@@ -29,7 +35,7 @@ export interface User {
 
 export interface Interaction {
   callId: string;
-  lessonType: LessonType
+  imageb64: string
   feedback: Feedback;
 }
 
@@ -49,4 +55,6 @@ export interface Feedback {
   coherenceSummary: string;
   engagementRating: number;
   engagementSummary: string;
+
+  title: string;
 }

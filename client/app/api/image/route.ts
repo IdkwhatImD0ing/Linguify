@@ -14,7 +14,6 @@ export async function POST(req: Request) {
   const payload: UploadImagePayload = await req.json();
   console.log(payload)
 
-
   try {
     const userRef = db.ref(`users/${payload.id}`)
     await userRef.update({

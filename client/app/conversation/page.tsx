@@ -6,7 +6,7 @@ import languageAgentMap from "./agent_mappings.json";
 import languageMappings from "./language_mappings.json";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import ActionReportComponent from "@/components/ui/action-graph";
+import { ActionReportComponent } from "@/components/ui/action-graph";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, PhoneOff } from 'lucide-react';
 
@@ -189,7 +189,7 @@ const Conversation = () => {
 
   async function getFeedback(callId: string): Promise<any> {
     try {
-      const response = await fetch("/api/feedback/" + callId);
+      const response = await fetch("/api/submit/" + callId);
 
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
