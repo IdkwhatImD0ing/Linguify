@@ -107,7 +107,6 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const userRef = db.ref(`users/${userId}`);
     const userVal = await userRef.get();
     const imageb64 = userVal.val().latestUploadedImage;
-    const prevInteractions = userVal.val().interactions;
 
     const interactionsRef = db.ref(`interaction/${userId}`)
     await interactionsRef.push({

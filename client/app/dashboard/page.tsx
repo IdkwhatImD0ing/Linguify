@@ -27,7 +27,7 @@ export default function Dashboard() {
       try {
         const historyRef = ref(database, `interaction/${userId}`);
         const snapshot = await get(historyRef);
-        console.log(snapshot.val());
+
         setHistory(snapshot.val());
       } catch (e) {
         console.log(e);
@@ -86,7 +86,8 @@ export default function Dashboard() {
             {history
               ? Object.keys(history).map((key: any, i: any) => (
                   <div key={i} className="rounded-lg overflow-hidden shadow-lg">
-                    <div className="h-[8.5rem] bg-[#AADF69]"></div>
+                    {/* <div className="h-[8.5rem] bg-[#AADF69]"></div> */}
+                    <img src={history[key]?.imageb64} className="h-[8.5rem]" />
                     <div className="h-24 bg-[#F5F5F5] flex flex-col justify-between">
                       <div>
                         <p className="text-[14px] font-semibold text-[#ADADAD] pt-2 px-2">
