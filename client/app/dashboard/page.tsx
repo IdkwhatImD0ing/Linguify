@@ -41,9 +41,9 @@ export default function Dashboard() {
     router.push(route);
   };
 
-  const titles = ["Coffee Shop", "House hunting", "Eating out", "Shopping"];
   return (
     <div className="h-screen w-full bg-[#E9E6E6] flex flex-col">
+
       <header className="flex justify-between items-center py-2 px-4">
         <div className="flex items-center space-x-2">
           <div className="relative w-12 h-12">
@@ -73,11 +73,14 @@ export default function Dashboard() {
       <main className="flex-grow px-4 space-y-4 flex flex-col overflow-hidden">
         <div className="bg-[#F5F5F5] p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-bold text-[#385664]">
-            Daily Challenge 🏆
+            How to Use Linguify?
           </h2>
-          <p className="text-gray-600 mb-2">Describe a picture to our AI!</p>
-          <button className="bg-[#30B8FB] text-white flex justify-left items-center rounded-full w-18 h-7 px-3 py-3 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300">
-            Start!
+          <p className="text-gray-600 mb-2">3 Steps to Success!</p>
+          <button
+            onClick={() => router.push("/how")}
+            className="bg-[#30B8FB] text-white flex justify-left items-center rounded-full w-18 h-7 px-3 py-3 font-semibold cursor-pointer hover:bg-[#355361] transition-all duration-300"
+          >
+            Check it out!
           </button>
         </div>
         <h1 className="text-2xl font-bold text-gray-800">Learning Journey</h1>

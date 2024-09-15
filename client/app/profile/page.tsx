@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from 'react';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from 'next/navigation';
 import { LabelList, RadialBar, RadialBarChart, PolarAngleAxis, Legend } from "recharts";
+import Image from 'next/image';
 
 import {
     Card,
@@ -63,6 +65,22 @@ const chartConfig = {
 export default function ProfilePage() {
     const { user } = useUser();
     const router = useRouter();
+    const [rank, setRank] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchRank = async () => {
+            try {
+                // Replace this with your actual API call
+                const response = await fetch('/api/user-rank');
+                const data = await response.json();
+                setRank(data.rank);
+            } catch (error) {
+                console.error('Error fetching rank:', error);
+            }
+        };
+
+        fetchRank();
+    }, []);
 
     const handleNavigation = (route: string) => {
         router.push(route);
@@ -83,19 +101,31 @@ export default function ProfilePage() {
                     </header>
 
                     <main className="flex flex-col items-center">
-                        <div className="w-24 h-24 rounded-full bg-[#385664] flex items-center justify-center mb-4">
-                            {user?.imageUrl ? (
-                                <img 
-                                    src={user.imageUrl} 
-                                    alt="Profile" 
-                                    className="w-full h-full rounded-full object-cover" 
-                                />
-                            ) : (
-                                <img 
-                                    src="/assets/icon-dark.png" 
-                                    alt="Profile" 
-                                    className="w-full h-full rounded-full object-cover" 
-                                />
+                        <div className="relative w-24 h-24 mb-4">
+                            <div className="w-full h-full rounded-full bg-[#385664] flex items-center justify-center overflow-hidden">
+                                {user?.imageUrl ? (
+                                    <img 
+                                        src={user.imageUrl} 
+                                        alt="Profile" 
+                                        className="w-full h-full object-cover" 
+                                    />
+                                ) : (
+                                    <img 
+                                        src="/assets/icon-dark.png" 
+                                        alt="Profile" 
+                                        className="w-full h-full object-cover" 
+                                    />
+                                )}
+                            </div>
+                            {rank && (
+                                <div className="absolute bottom-0 right-0 w-8 h-8">
+                                    <Image
+                                        src={`/assets/rank-${rank}.png`}
+                                        alt={`Rank ${rank}`}
+                                        layout="fill"
+                                        objectFit="contain"
+                                    />
+                                </div>
                             )}
                         </div>
 
