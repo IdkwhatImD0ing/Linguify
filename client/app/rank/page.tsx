@@ -65,7 +65,7 @@ export default function RankPlacement() {
             </button>
         </header>
 
-        <div className="w-56 h-56 mb-8 relative">
+        <div className="w-60 h-60 mb-8 relative">
             <Image
             src={currentRank.image}
             alt={`${currentRank.name} Rank Image`}
@@ -75,10 +75,10 @@ export default function RankPlacement() {
             />
         </div>
 
-        <h1 className="text-4xl font-bold text-[#30B8FB] mb-4">{currentRank.name}</h1>
+        <h1 className="text-5xl font-bold text-[#30B8FB] mb-4">{currentRank.name}</h1>
 
         <div className="bg-white p-4 rounded-lg shadow-lg text-center max-w-md">
-            <p className="text-[#385664] text-lg">{currentRank.description}</p>
+            <p className="text-[#385664] text-md">{currentRank.description}</p>
         </div>
 
         <nav className="fixed bottom-3 left-10 right-10 bg-[#385664] text-[#F5F5F5] shadow-lg py-4 flex justify-around items-center rounded-full">

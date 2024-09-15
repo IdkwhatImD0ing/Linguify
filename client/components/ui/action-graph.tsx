@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";  
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -41,6 +42,7 @@ export const ActionReportComponent: React.FC<ActionReportProps> = ({
   feedback,
 }) => {
   const [selectedSkill, setSelectedSkill] = useState<string>("Grammar");
+  const router = useRouter();  // Add this line
 
   const data = feedback ? JSON.parse(feedback) as Feedback : undefined;
 
@@ -138,6 +140,7 @@ export const ActionReportComponent: React.FC<ActionReportProps> = ({
               as="button"
               from="#9bc960"
               to="#F5F5F5"
+              onClick={() => router.push('/rank')}  // Add this onClick handler
             >
               <div className="w-full py-2 rounded-md flex items-center justify-center"> 
                 <span className="font-semibold text-white">

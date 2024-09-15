@@ -141,14 +141,14 @@ export default function ProfilePage() {
                             <CardContent>
                                 <div className="mb-2">
                                     <div className="flex justify-between mb-1 text-[#385664]">
-                                        <span className="text-sm font-medium">Language #1</span>
+                                        <span className="text-sm font-medium">Chinese</span>
                                         <span className="text-sm font-medium ">75%</span>
                                     </div>
                                     <Progress value={75} className="h-2 bg-[#AADF69]/20" indicatorClassName="bg-[#AADF69]" />
                                 </div>
                                 <div>
                                     <div className="flex justify-between mb-1 text-[#385664]">
-                                        <span className="text-sm font-medium">Language #2</span>
+                                        <span className="text-sm font-medium">Korean</span>
                                         <span className="text-sm font-medium">50%</span>
                                     </div>
                                     <Progress value={50} className="h-2 bg-[#AADF69]/20" indicatorClassName="bg-[#AADF69]" />
