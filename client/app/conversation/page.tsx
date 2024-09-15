@@ -9,6 +9,8 @@ import { useAuth } from "@clerk/nextjs";
 import { ActionReportComponent } from "@/components/ui/action-graph";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, PhoneOff } from 'lucide-react';
+import Image from 'next/image';
+import { Progress } from "@/components/ui/progress"
 
 
 interface RegisterCallResponse {
@@ -193,8 +195,21 @@ const Conversation = () => {
 
   if (isLoading) {
     return (
-      <div className="loading-screen">
-        <p>Loading...</p>
+      <div className="loading-screen flex items-center justify-center h-screen bg-[#f5f5f5]">
+        <div className="text-center">
+          <div className="relative w-24 h-24 mx-auto mb-4">
+            <Image
+              src="/assets/icon-dark.png"
+              alt="Linguify Logo"
+              layout="fill"
+              objectFit="contain"
+            />
+          </div>
+          <div className="w-48 mx-auto">
+            <Progress value={99} className="h-2" />
+          </div>
+          <p className="text-[#385664] font-semibold mt-2">Loading...</p>
+        </div>
       </div>
     );
   }
