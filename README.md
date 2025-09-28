@@ -1,4 +1,4 @@
-# [Linguify] (https://devpost.com/software/linguify-katunw)
+# [Linguify](https://devpost.com/software/linguify-katunw)
 
 > ### Live the Language Through Real-World Interaction
 
